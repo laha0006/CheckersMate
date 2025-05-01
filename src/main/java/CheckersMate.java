@@ -16,8 +16,13 @@ public class CheckersMate {
 //        playerMove("34-14");
         Map<Integer,Set<Integer>> legalJumpMoves = CreateLegalJumpMoveMap();
         Map<Integer,Set<Integer>> legalSimpleMoves = CreateLegalSimpleMoveMap();
-        int[] testBoard = new int[] {black,black,black,black,black,white,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-        System.out.println(legalJumpMove(0, 31, testBoard, black, legalJumpMoves));
+        int[] testBoard = new int[] {blackKing,blackKing,black,black,black,white,0,0,0,0,0,0,0,white,white,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+//        System.out.println(legalJumpMove(0,9, testBoard,black,CreateLegalJumpMoveMap()));
+        List<String> jumpMoves = getMovesForTurn(black, testBoard );
+        for (String move : jumpMoves) {
+            System.out.println(move);
+        }
+//        System.out.println(legalJumpMove(0, 31, testBoard, black, legalJumpMoves));
     }
 
     public static int[] createStartBoard() {
@@ -125,32 +130,32 @@ public class CheckersMate {
 
        return legalMoveMap;
     }
-
+// TODO: FIX values
     public static Map<Integer, Integer> createJumpOverIndexMap() {
         Map<Integer, Integer> jumpOverIndexMap = new HashMap<>();
-        jumpOverIndexMap.put(10, 5);
-        jumpOverIndexMap.put(12, 6);
-        jumpOverIndexMap.put(14, 7);
+        jumpOverIndexMap.put(9, 5);
+        jumpOverIndexMap.put(11, 6);
+        jumpOverIndexMap.put(13, 7);
 
-        jumpOverIndexMap.put(18, 9);
-        jumpOverIndexMap.put(20, 10);
-        jumpOverIndexMap.put(22, 11);
+        jumpOverIndexMap.put(17, 8);
+        jumpOverIndexMap.put(19, 9);
+        jumpOverIndexMap.put(21, 10);
 
-        jumpOverIndexMap.put(26, 13);
-        jumpOverIndexMap.put(28, 14);
-        jumpOverIndexMap.put(30, 15);
+        jumpOverIndexMap.put(25, 13);
+        jumpOverIndexMap.put(27, 14);
+        jumpOverIndexMap.put(29, 15);
 
-        jumpOverIndexMap.put(34, 16);
-        jumpOverIndexMap.put(36, 17);
-        jumpOverIndexMap.put(38, 18);
+        jumpOverIndexMap.put(33, 16);
+        jumpOverIndexMap.put(35, 17);
+        jumpOverIndexMap.put(37, 18);
 
-        jumpOverIndexMap.put(42, 21);
-        jumpOverIndexMap.put(44, 22);
-        jumpOverIndexMap.put(46, 23);
+        jumpOverIndexMap.put(41, 21);
+        jumpOverIndexMap.put(43, 22);
+        jumpOverIndexMap.put(45, 23);
 
-        jumpOverIndexMap.put(50, 24);
-        jumpOverIndexMap.put(52, 25);
-        jumpOverIndexMap.put(54, 26);
+        jumpOverIndexMap.put(49, 24);
+        jumpOverIndexMap.put(51, 25);
+        jumpOverIndexMap.put(53, 26);
         return jumpOverIndexMap;
     }
 
@@ -172,7 +177,7 @@ public class CheckersMate {
         if (!moves.contains(to)) {
             return false;
         }
-        if (boardToPosition != empty && boardFromPosition == empty) {
+        if (boardToPosition != empty || boardFromPosition == empty) {
             return false;
         }
         if (turn == black && (boardFromPosition == white || boardFromPosition == whiteKing)) {
@@ -190,32 +195,32 @@ public class CheckersMate {
     }
 
     public static boolean legalJumpMove(int from, int to, int[] board, int turn, Map<Integer,Set<Integer>> legalMoveMap) {
-        if(!isLegalMove(from, to, board, turn, legalMoveMap)) {
+//        if(!isLegalMove(from, to, board, turn, legalMoveMap)) {
+//            return false;
+//        }
+//        System.out.println("from:" + from + " to:" + to);
+        Map<Integer, Integer> jumpOverIndexes = createJumpOverIndexMap();
+        int sum = from + to;
+        int diff = from - to;
+        int jumpOverIndex = jumpOverIndexes.get(sum);
+        int fromPiece = board[from];
+        int jumpOverPiece = board[jumpOverIndex];
+
+        if (board[to] != empty) {
             return false;
         }
 
 
-        // TODO: move to new map, instead of doing math
-        int row = from / 4;
-        int jumpOverIndex;
-        if (row % 2 == 0) {
-            jumpOverIndex = (from+1 + to) / 2;
-        } else {
-            jumpOverIndex = (from-1 + to) / 2;
-        }
-        // from + to, lookup in map
-        // TODO: move to new map ^^^, instead of doing math
-
-        int piece = board[jumpOverIndex];
+        // true
         if (turn == black) {
-            return piece == white || piece == whiteKing;
+            return isWhite(jumpOverPiece) && isBlack(fromPiece) && ( diff < 0 || fromPiece == blackKing);
         }
         if (turn == white) {
-            return piece == black || piece == blackKing;
+            return isBlack(jumpOverPiece) && isWhite(fromPiece) && ( diff > 0 || fromPiece == whiteKing);
         }
-
         return true;
     }
+
     public static boolean isBlack(int piece) {
         return piece == black || piece == blackKing;
     }
@@ -228,34 +233,49 @@ public class CheckersMate {
     }
 
     public static List<String> getMovesForTurn(int turn, int[] board) {
-        List<String> moves = new ArrayList<>();
-        if (turn == black) {
-            for (int i = 0; i < boardSize; i++) {
-                int currentPiece = board[i];
-                if (isBlack(currentPiece)) {
-                    moves.addAll(getMovesForPosition(i, turn , board));
-                }
-            }
+        List<String> jumpMoves = new ArrayList<>();
+        List<String> simpleMoves = new ArrayList<>();
+        for (int i = 0; i < boardSize; i++) {
+//          addSimpleMoves()
+            jumpMoves.addAll(addJumpSequenceStrings(i, board, turn, CreateLegalJumpMoveMap(),Integer.toString(i), new HashSet<String>(), new ArrayList<String>()));
         }
-        if (turn == white) {
-        }
-        return moves;
+
+
+        return jumpMoves;
     }
 
-     - 15
-
-    public static String getJumpSequenceString(int position, int[] board, int turn, Map<Integer, Set<Integer>> jumpMoveSet, String jumpSequence) {
-        Set<Integer> jumpMoves = jumpMoveSet.get(position);
-
-
-        for (Integer jumpDestination : jumpMoves) {
-            String move;
-            if (legalJumpMove(position, jumpDestination, board, turn, jumpMoveSet)) {
-                move = position + "x" + jumpDestination;
-                // recursive...
+    public static List<String> addJumpSequenceStrings(int position, int[] board, int turn, Map<Integer, Set<Integer>> jumpMoveSet, String jumpSequence, Set<String> visisted, List<String> jumpSequences) {
+        Set<Integer> moves = jumpMoveSet.get(position);
+        boolean jumped = false;
+        for(int move : moves) {
+            String moveString = Integer.toString(position) + Integer.toString(move);
+            String moveStringTwo = Integer.toString(move) + Integer.toString(position);
+            if(legalJumpMove(position, move, board, turn, jumpMoveSet) && !visisted.contains(moveString)) {
+                visisted.add(moveString);
+                visisted.add(moveStringTwo);
+                System.out.println("moveString:" + moveString);
+                System.out.println("moveStringTwo:" + moveStringTwo);
+                System.out.println();
+                String oldSequence = jumpSequence;
+                jumpSequence += "x" + move;
+                jumped = true;
+                board[move] = board[position];
+                int old = board[position];
+                board[position] = empty;
+                addJumpSequenceStrings(move, board, turn, jumpMoveSet, jumpSequence, visisted, jumpSequences );
+                board[move] = empty;
+                board[position] = old;
+                jumpSequence = oldSequence;
             }
-            // add move ot list
+
+
         }
+
+        if (!jumped && jumpSequence.contains("x")) {
+            jumpSequences.add(jumpSequence);
+        }
+
+        return jumpSequences;
     }
 
 //    private static List<String> getJumpSequences(int position, int[] board, int turn) {
@@ -273,33 +293,33 @@ public class CheckersMate {
 //        // 3. if no legal moves are found, add move to list, and go to 1
 //    }
 
-    private static List<String> getMovesForPosition(int position, int turn, int[] board) {
-        Map<Integer, Set<Integer>> simpleMoveSet = CreateLegalSimpleMoveMap();
-        Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
-
-        Set<Integer> simpleMoves = simpleMoveSet.get(position);
-        Set<Integer> jumpMoves = jumpMoveSet.get(position);
-
-        List<String> moves = new ArrayList<>();
-
-        int currentPiece = board[position];
-
-        // check set of moves in simpleMoveSet
-        moves.addAll(simpleMoves
-                .stream()
-                .map((Integer destination) -> {
-                    if (isLegalMove(position, destination, board, turn, simpleMoveSet)) {
-                        return position + "-" + destination;
-                    }
-                    return "";
-                })
-                .filter((String move) -> !move.isEmpty())
-                .toList());
-        // check set of moves in jumpMoveSet
-
-        // check if they are legal moves
-        // if they are legal push to moves
-
-    }
+//    private static List<String> getMovesForPosition(int position, int turn, int[] board) {
+//        Map<Integer, Set<Integer>> simpleMoveSet = CreateLegalSimpleMoveMap();
+//        Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
+//
+//        Set<Integer> simpleMoves = simpleMoveSet.get(position);
+//        Set<Integer> jumpMoves = jumpMoveSet.get(position);
+//
+//        List<String> moves = new ArrayList<>();
+//
+//        int currentPiece = board[position];
+//
+//        // check set of moves in simpleMoveSet
+//        moves.addAll(simpleMoves
+//                .stream()
+//                .map((Integer destination) -> {
+//                    if (isLegalMove(position, destination, board, turn, simpleMoveSet)) {
+//                        return position + "-" + destination;
+//                    }
+//                    return "";
+//                })
+//                .filter((String move) -> !move.isEmpty())
+//                .toList());
+//        // check set of moves in jumpMoveSet
+//
+//        // check if they are legal moves
+//        // if they are legal push to moves
+//        return null;
+//    }
 
 }
