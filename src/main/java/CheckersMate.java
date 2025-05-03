@@ -251,7 +251,7 @@ public class CheckersMate {
             String moveString = Integer.toString(position) + Integer.toString(move);
             String moveStringTwo = Integer.toString(move) + Integer.toString(position);
             if(legalJumpMove(position, move, board, turn, jumpMoveSet) && !visisted.contains(moveString)) {
-                visisted.add(moveString);
+                visisted.add(moveString);    //TODO: consider if using jumpOverIndex makes sense here.
                 visisted.add(moveStringTwo);
                 System.out.println("moveString:" + moveString);
                 System.out.println("moveStringTwo:" + moveStringTwo);
