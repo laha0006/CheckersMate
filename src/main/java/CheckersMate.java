@@ -1,14 +1,10 @@
 import java.util.*;
 
 public class CheckersMate {
-    public static final int black = 1;
-    public static final int blackKing = 11;
-    public static final int white = 2;
-    public static final int whiteKing = 22;
-    public static final int empty = 0;
-    public static final int boardSize = 32;
+
+
     public static void main(String[] args) {
-        int[] board = createStartBoard();
+        int[] board = Board.createStartBoard();
 //        for (int i = 0; i < board.length; i++) {
 //            System.out.println(board[i]);
 //        }
@@ -16,31 +12,23 @@ public class CheckersMate {
 //        playerMove("34-14");
         Map<Integer,Set<Integer>> legalJumpMoves = CreateLegalJumpMoveMap();
         Map<Integer,Set<Integer>> legalSimpleMoves = CreateLegalSimpleMoveMap();
-        int[] testBoard = new int[] {blackKing,blackKing,black,black,black,white,0,0,0,0,0,0,0,white,white,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        int[] testBoard = new int[] {Board.blackKing,Board.blackKing,Board.black,Board.black,Board.black,
+                Board.white,0,0,0,0,0,0,0,Board.white,Board.white,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 //        System.out.println(legalJumpMove(0,9, testBoard,black,CreateLegalJumpMoveMap()));
-        List<String> jumpMoves = getMovesForTurn(black, testBoard );
+        List<String> jumpMoves = getMovesForTurn(Board.black, testBoard );
         for (String move : jumpMoves) {
             System.out.println(move);
         }
 //        System.out.println(legalJumpMove(0, 31, testBoard, black, legalJumpMoves));
     }
 
-    public static int[] createStartBoard() {
-        int[] boardState = new int[boardSize];
-        for (int i = 0; i < 12; i++) {
-            boardState[i] = black;
-        }
-        for (int i = 20; i < 32;  i++  ) {
-            boardState[i] = white;
-        }
-        return boardState;
-    }
+
 
     public static void playerMove(String move) {
         String[] parsedString = move.split("-");
         int from = Integer.parseInt(parsedString[0]);
         int to = Integer.parseInt(parsedString[1]);
-        if (from > boardSize || from < 0 || to < 0 || to > boardSize) {
+        if (from > Board.boardSize || from < 0 || to < 0 || to > Board.boardSize) {
             System.out.println("out of bounds move: " + move);
             return;
         }
@@ -166,24 +154,24 @@ public class CheckersMate {
 
         int difference = to - from;
 
-        if (turn == black && difference < 0 && !isKing(boardFromPosition)) {
+        if (turn == Board.black && difference < 0 && !isKing(boardFromPosition)) {
             return false;
         }
 
-        if (turn == white && difference > 0 && !isKing(boardFromPosition)) {
+        if (turn == Board.white && difference > 0 && !isKing(boardFromPosition)) {
             return false;
         }
 
         if (!moves.contains(to)) {
             return false;
         }
-        if (boardToPosition != empty || boardFromPosition == empty) {
+        if (boardToPosition != Board.empty || boardFromPosition == Board.empty) {
             return false;
         }
-        if (turn == black && (boardFromPosition == white || boardFromPosition == whiteKing)) {
+        if (turn == Board.black && (boardFromPosition == Board.white || boardFromPosition == Board.whiteKing)) {
             return false;
         }
-        if (turn == white && (boardFromPosition == black || boardFromPosition == blackKing)) {
+        if (turn == Board.white && (boardFromPosition == Board.black || boardFromPosition == Board.blackKing)) {
             return false;
         }
 
@@ -206,39 +194,39 @@ public class CheckersMate {
         int fromPiece = board[from];
         int jumpOverPiece = board[jumpOverIndex];
 
-        if (board[to] != empty) {
+        if (board[to] != Board.empty) {
             return false;
         }
 
 
         // true
-        if (turn == black) {
-            return isWhite(jumpOverPiece) && isBlack(fromPiece) && ( diff < 0 || fromPiece == blackKing);
+        if (turn == Board.black) {
+            return isWhite(jumpOverPiece) && isBlack(fromPiece) && ( diff < 0 || fromPiece == Board.blackKing);
         }
-        if (turn == white) {
-            return isBlack(jumpOverPiece) && isWhite(fromPiece) && ( diff > 0 || fromPiece == whiteKing);
+        if (turn == Board.white) {
+            return isBlack(jumpOverPiece) && isWhite(fromPiece) && ( diff > 0 || fromPiece == Board.whiteKing);
         }
         return true;
     }
 
     public static boolean isBlack(int piece) {
-        return piece == black || piece == blackKing;
+        return piece == Board.black || piece == Board.blackKing;
     }
     public static boolean isWhite(int piece) {
-        return piece == white || piece == whiteKing;
+        return piece == Board.white || piece == Board.whiteKing;
     }
 
     public static boolean isKing(int piece) {
-        return piece == blackKing || piece == whiteKing;
+        return piece == Board.blackKing || piece == Board.whiteKing;
     }
 
     public static boolean isBlackKing(int piece) {
-        return piece == blackKing;
+        return piece == Board.blackKing;
     }
     public static List<String> getMovesForTurn(int turn, int[] board) {
         List<String> jumpMoves = new ArrayList<>();
         List<String> simpleMoves = new ArrayList<>();
-        for (int i = 0; i < boardSize; i++) {
+        for (int i = 0; i < Board.boardSize; i++) {
 //          addSimpleMoves()
             jumpMoves.addAll(addJumpSequenceStrings(i, board, turn, CreateLegalJumpMoveMap(),Integer.toString(i), new HashSet<String>(), new ArrayList<String>()));
         }
@@ -264,9 +252,9 @@ public class CheckersMate {
                 jumped = true;
                 board[move] = board[position];
                 int old = board[position];
-                board[position] = empty;
+                board[position] = Board.empty;
                 addJumpSequenceStrings(move, board, turn, jumpMoveSet, jumpSequence, visisted, jumpSequences );
-                board[move] = empty;
+                board[move] = Board.empty;
                 board[position] = old;
                 jumpSequence = oldSequence;
             }
