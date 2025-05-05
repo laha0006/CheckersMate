@@ -232,6 +232,9 @@ public class CheckersMate {
         return piece == blackKing || piece == whiteKing;
     }
 
+    public static boolean isBlackKing(int piece) {
+        return piece == blackKing;
+    }
     public static List<String> getMovesForTurn(int turn, int[] board) {
         List<String> jumpMoves = new ArrayList<>();
         List<String> simpleMoves = new ArrayList<>();
