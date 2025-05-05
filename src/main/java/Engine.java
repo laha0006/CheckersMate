@@ -42,9 +42,11 @@ public class Engine {
         }
         else {
             //make jump move
+            int sum = from + to;
+            int jumpOverIndex = JUMP_OVER_INDEX_MAP.get(sum);
             board[to] = board[from];
             board[from] = Board.empty;
-            //board[jumpedOverPiece] = Board.empty;
+            board[jumpOverIndex] = Board.empty;
             return true;
         }
 
