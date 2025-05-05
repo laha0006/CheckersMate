@@ -17,7 +17,7 @@ public class CheckersMate {
 
         //print board
         System.out.println(Board.moveGuide());
-        System.out.println(Board.printBoard(board));
+        System.out.println(Board.printBoard(testBoard));
 
         //        System.out.println(legalJumpMove(0,9, testBoard,black,CreateLegalJumpMoveMap()));
         List<String> jumpMoves = getMovesForTurn(Board.black, testBoard );
