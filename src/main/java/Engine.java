@@ -34,11 +34,15 @@ public class Engine {
 
         int difference = to - from;
 
-        if (turn == Board.black && difference < 0 && !isKing(boardFromPosition)) {
+        if (!turnAndPieceMatches(turn, boardFromPosition)) {
+            return false;
+        }
+        
+        if (isBlackPawn(boardFromPosition) && difference < 0) {
             return false;
         }
 
-        if (turn == Board.white && difference > 0 && !isKing(boardFromPosition)) {
+        if (isWhitePawn(boardFromPosition) && difference > 0) {
             return false;
         }
 
@@ -48,13 +52,8 @@ public class Engine {
         if (!isEmpty(boardToPosition) || isEmpty(boardFromPosition)) {
             return false;
         }
-        if (turn == Board.black && (boardFromPosition == Board.white || isWhiteKing(boardFromPosition))) {
-            return false;
-        }
-        if (turn == Board.white && (boardFromPosition == Board.black || isBlackKing(boardFromPosition))) {
-            return false;
-        }
-
+        
+        
         return true;
     }
 
@@ -82,11 +81,11 @@ public class Engine {
     }
 
     public static boolean isBlack(int piece) {
-        return piece == Board.black || isBlackKing(piece);
+        return piece == Board.blackPawn || isBlackKing(piece);
     }
 
     public static boolean isWhite(int piece) {
-        return piece == Board.white || isWhiteKing(piece);
+        return piece == Board.whitePawn || isWhiteKing(piece);
     }
 
     public static boolean isBlackKing(int piece) {
@@ -95,6 +94,14 @@ public class Engine {
 
     public static boolean isWhiteKing(int piece) {
         return piece == Board.whiteKing;
+    }
+
+    public static boolean isBlackPawn(int piece) {
+        return piece == Board.blackPawn;
+    }
+
+    public static boolean isWhitePawn(int piece) {
+        return piece == Board.whitePawn;
     }
 
     public static boolean isKing(int piece) {

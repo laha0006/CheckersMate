@@ -50,11 +50,14 @@ public class CheckersMate {
         // testBoard,black,CreateLegalJumpMoveMap()));
 
         List<Integer> movablePieces = Engine.getMovablePieces(board, Board.black);
+        System.out.println("Available pieces:");
         for (int piece : movablePieces) {
             System.out.println(piece);
         }
 
         List<String> moves = Engine.getMovesForTurn(board, Board.black);
+        System.out.println("Available moves:");
+
         for (String move : moves) {
             System.out.println(move);
         }
