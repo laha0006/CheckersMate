@@ -94,7 +94,7 @@ public class Board {
                 .append(stringHelper(b[29])).append(" -- ")
                 .append(stringHelper(b[30])).append(" -- ")
                 .append(stringHelper(b[31])).append(" -- |")
-                .append("+-------------------------+");
+                .append("\n+-------------------------+");
 
         return sb.toString();
     }
