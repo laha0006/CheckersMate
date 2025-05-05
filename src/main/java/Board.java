@@ -36,11 +36,17 @@ public class Board {
                 """;
     }
 
-    public static String printBoard(){
-        StringBuilder string = new StringBuilder();
-
-        string.append("+-------------------------+");
-        string.append("| -- "+);
+    public static String printBoard(int[] b){
+        String string = "+---------------------+";
+        string += "\n| -- "+b[0]+" -- "+b[1]+" -- "+b[2]+" -- "+b[3]+" |";
+        string += "\n| "+b[4]+" -- "+b[5]+" -- "+b[6]+" -- "+b[7]+" -- |";
+        string += "\n| -- "+b[8]+" -- "+b[9]+" -- "+b[10]+" -- "+b[11]+" |";
+        string += "\n| "+b[12]+" -- "+b[13]+" -- "+b[14]+" -- "+b[15]+" -- |";
+        string += "\n| -- "+b[16]+" -- "+b[17]+" -- "+b[18]+" -- "+b[19]+" |";
+        string += "\n| "+b[20]+" -- "+b[21]+" -- "+b[22]+" -- "+b[23]+" -- |";
+        string += "\n| -- "+b[24]+" -- "+b[25]+" -- "+b[26]+" -- "+b[27]+" |";
+        string += "\n| "+b[28]+" -- "+b[29]+" -- "+b[30]+" -- "+b[31]+" -- |";
+        string += "\n+---------------------+";
 
         return string;
     }

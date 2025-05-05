@@ -14,7 +14,12 @@ public class CheckersMate {
         Map<Integer,Set<Integer>> legalSimpleMoves = CreateLegalSimpleMoveMap();
         int[] testBoard = new int[] {Board.blackKing,Board.blackKing,Board.black,Board.black,Board.black,
                 Board.white,0,0,0,0,0,0,0,Board.white,Board.white,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-//        System.out.println(legalJumpMove(0,9, testBoard,black,CreateLegalJumpMoveMap()));
+
+        //print board
+        System.out.println(Board.moveGuide());
+        System.out.println(Board.printBoard(board));
+
+        //        System.out.println(legalJumpMove(0,9, testBoard,black,CreateLegalJumpMoveMap()));
         List<String> jumpMoves = getMovesForTurn(Board.black, testBoard );
         for (String move : jumpMoves) {
             System.out.println(move);
