@@ -165,13 +165,13 @@ public class CheckersMate {
         if (!moves.contains(to)) {
             return false;
         }
-        if (boardToPosition != Board.empty || boardFromPosition == Board.empty) {
+        if ( !isEmpty(boardToPosition) || isEmpty(boardFromPosition) ) {
             return false;
         }
-        if (turn == Board.black && (boardFromPosition == Board.white || boardFromPosition == Board.whiteKing)) {
+        if (turn == Board.black && (boardFromPosition == Board.white || isWhiteKing(boardFromPosition))) {
             return false;
         }
-        if (turn == Board.white && (boardFromPosition == Board.black || boardFromPosition == Board.blackKing)) {
+        if (turn == Board.white && (boardFromPosition == Board.black || isBlackKing(boardFromPosition))) {
             return false;
         }
 
@@ -194,35 +194,44 @@ public class CheckersMate {
         int fromPiece = board[from];
         int jumpOverPiece = board[jumpOverIndex];
 
-        if (board[to] != Board.empty) {
+        if ( !isEmpty(board[to]) ) {
             return false;
         }
 
 
         // true
         if (turn == Board.black) {
-            return isWhite(jumpOverPiece) && isBlack(fromPiece) && ( diff < 0 || fromPiece == Board.blackKing);
+            return isWhite(jumpOverPiece) && isBlack(fromPiece) && ( diff < 0 || isBlackKing(fromPiece));
         }
         if (turn == Board.white) {
-            return isBlack(jumpOverPiece) && isWhite(fromPiece) && ( diff > 0 || fromPiece == Board.whiteKing);
+            return isBlack(jumpOverPiece) && isWhite(fromPiece) && ( diff > 0 || isWhiteKing(fromPiece));
         }
         return true;
     }
 
     public static boolean isBlack(int piece) {
-        return piece == Board.black || piece == Board.blackKing;
+        return piece == Board.black || isBlackKing(piece);
     }
     public static boolean isWhite(int piece) {
-        return piece == Board.white || piece == Board.whiteKing;
-    }
-
-    public static boolean isKing(int piece) {
-        return piece == Board.blackKing || piece == Board.whiteKing;
+        return piece == Board.white || isWhiteKing(piece);
     }
 
     public static boolean isBlackKing(int piece) {
         return piece == Board.blackKing;
     }
+    
+    public static boolean isWhiteKing(int piece) {
+        return piece == Board.whiteKing;
+    }
+    
+    public static boolean isKing(int piece) {
+        return isBlackKing(piece) || isWhiteKing(piece);
+    }
+
+    public static boolean isEmpty(int tile) {
+        return tile == Board.empty;
+    }
+    
     public static List<String> getMovesForTurn(int turn, int[] board) {
         List<String> jumpMoves = new ArrayList<>();
         List<String> simpleMoves = new ArrayList<>();
