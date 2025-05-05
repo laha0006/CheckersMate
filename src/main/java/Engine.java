@@ -10,18 +10,44 @@ public class Engine {
     private static final Map<Integer, Set<Integer>> LEGAL_JUMP_MOVE_MAP = MoveMaps.createLegalJumpMoveMap();
     private static final Map<Integer, Integer> JUMP_OVER_INDEX_MAP = MoveMaps.createJumpOverIndexMap();
 
-    public static void playerMove(String move) {
-        String[] parsedString = move.split("-");
+    public static boolean playerMove(int[] board, int turn, String move) {
+        if(!getMovesForTurn(board, turn).contains(move)) {
+            System.out.println("Not in move list!");
+            System.out.println(getMovesForTurn(board, turn));
+            //move not possible
+            return false;
+        }
+
+        String[] parsedString;
+        int moveType;
+        if(move.contains("-")){
+            parsedString = move.split("-");
+            moveType = 1;
+        }
+        else if(move.contains("x")){
+            parsedString = move.split("x");
+            moveType = 2;
+        }else{
+            return false;
+        }
+
         int from = Integer.parseInt(parsedString[0]);
         int to = Integer.parseInt(parsedString[1]);
-        if (from > Board.boardSize || from < 0 || to < 0 || to > Board.boardSize) {
-            System.out.println("out of bounds move: " + move);
-            return;
+
+        if(moveType == 1){
+            //simple move
+            board[to] = board[from];
+            board[from] = Board.empty;
+            return true;
         }
-        if (from == to) {
-            System.out.println("Not a valid move: " + move);
-            return;
+        else {
+            //make jump move
+            board[to] = board[from];
+            board[from] = Board.empty;
+            //board[jumpedOverPiece] = Board.empty;
+            return true;
         }
+
 
         // System.out.println("FROM: " + from);
         // System.out.println("TO: " + to);

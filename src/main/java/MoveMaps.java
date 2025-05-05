@@ -83,7 +83,7 @@ public class MoveMaps {
 
        return legalJumpMoveMap;
     }
-// TODO: FIX values
+
     public static Map<Integer, Integer> createJumpOverIndexMap() {
         Map<Integer, Integer> jumpOverIndexMap = new HashMap<>();
         jumpOverIndexMap.put(9, 5);
