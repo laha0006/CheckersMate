@@ -18,6 +18,7 @@ public class Board {
     public int[] old;
     public int[] saved;
     List<int[]> oldBoards = new ArrayList<>();
+    List<int[]> savedBoards = new ArrayList<>();
 
     public Board() {
         board = createStartBoard();
@@ -82,13 +83,11 @@ public class Board {
         return board;
     }
 
-//    public int[] save() {
-//        saved = board.clone();
-//        return saved;
-//    }
-//
-//    public int[] load() {
-//        board = saved;
-//        return board;
-//    }
+    public void save() {
+        savedBoards.add(board.clone());
+    }
+
+    public void load() {
+        board = savedBoards.removeLast();
+    }
 }

@@ -4,15 +4,19 @@ public class CheckersMate {
 
     public static void main(String[] args) {
         Board board = new Board();
-        board.useTestBoard();
+//        board.useTestBoard();
         Engine engine = new Engine(board,1);
+        AI ai = new AI(engine,2);
         DrawBoard draw = new DrawBoard(board);
 //        System.out.println(draw.moveGuide());
 //        System.out.println(draw.printBoard());
 //        System.out.println(engine.getMovesForTurn());
 //        System.out.println(draw.printBoard());
-
-
+//        System.out.println(engine.getTurn());
+//        engine.playerMove("8-12");
+//        System.out.println(engine.getTurn());
+//        engine.playerMove(ai.getComputerMove());
+//        System.out.println(engine.getTurn());
 
         int turnsLeft = 100;
 
@@ -31,13 +35,18 @@ public class CheckersMate {
                 System.out.println(move);
             }
 
-            System.out.println("Make your move "+currentPlayer+"!");
+            if (engine.getTurn() == 1) {
 
-            choice = scanner.nextLine();
+                System.out.println("Make your move " + currentPlayer + "!");
 
-            while(!engine.playerMove(choice)){
-                System.out.println("Impossible move! Try again!");
                 choice = scanner.nextLine();
+
+                while (!engine.playerMove(choice)) {
+                    System.out.println("Impossible move! Try again!");
+                    choice = scanner.nextLine();
+                }
+            } else {
+                engine.playerMove(ai.getComputerMove());
             }
             turnsLeft--;
         }

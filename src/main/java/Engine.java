@@ -269,6 +269,10 @@ public class Engine {
         return turn;
     }
 
+    public Board getState() {
+        return board;
+    }
+
     // public List<String> getAvailableMovesForPosition(int position, int[]
     // board, int turn) {
     // List<String> availableMoves = new ArrayList<>();
