@@ -37,14 +37,14 @@ public class Board {
 
     public void useTestBoard() {
         board = new int[]
-                {blackPawn,empty,whitePawn,blackPawn,
+                { blackPawn,empty,whiteKing,blackPawn,
                 blackPawn,whitePawn,whitePawn,blackPawn,
-                blackKing,blackPawn,empty,blackPawn,
+                  blackKing,blackPawn,empty,blackPawn,
                 empty,whitePawn,whitePawn,empty,
-                empty,empty,empty,empty,
+                  empty,empty,empty,empty,
                 whitePawn,whitePawn,whitePawn,whitePawn,
-                empty,empty,empty,empty,
-                whitePawn,whitePawn,whitePawn,whitePawn};
+                  blackPawn,empty,empty,empty,
+                empty,whitePawn,whitePawn,whitePawn};
     }
 
 

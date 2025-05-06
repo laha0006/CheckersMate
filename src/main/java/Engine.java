@@ -32,7 +32,6 @@ public class Engine {
     }
 
     public boolean playerMove(String move) {
-        System.out.println(getMovesForTurn());
         if(!getMovesForTurn().contains(move)) {
             System.out.println("Not in move list!");
             return false;
@@ -57,7 +56,9 @@ public class Engine {
             int from = Integer.parseInt(parsedString[0]);
             int to = Integer.parseInt(parsedString[1]);
             board.move(from, to);
-            flipTurn();
+            if (turn == black && to > 27 || turn == white && to < 4) { 
+                board.getBoard()[to] = isBlack(board.getBoard()[to]) ? blackKing : whiteKing; 
+            }
             return true;
         }
         else {
@@ -74,7 +75,10 @@ public class Engine {
             int firstFrom = Integer.parseInt(parsedString[0]);
             int finalTo = Integer.parseInt(parsedString[length - 1]);
             board.jump(firstFrom,finalTo, eliminations);
-            flipTurn();
+            if (turn == black && finalTo > 27 || turn == white && finalTo < 4) { 
+                board.getBoard()[finalTo] = isBlack(board.getBoard()[finalTo]) ? blackKing : whiteKing; 
+            }
+
             return true;
         }
     }

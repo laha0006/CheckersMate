@@ -4,7 +4,7 @@ public class CheckersMate {
 
     public static void main(String[] args) {
         Board board = new Board();
-//        board.useTestBoard();
+       board.useTestBoard();
         Engine engine = new Engine(board,1);
         AI ai = new AI(engine,2);
         DrawBoard draw = new DrawBoard(board);
@@ -45,8 +45,15 @@ public class CheckersMate {
                     System.out.println("Impossible move! Try again!");
                     choice = scanner.nextLine();
                 }
+                engine.flipTurn();
             } else {
-                engine.playerMove(ai.getComputerMove());
+                String aiMove = ai.getComputerMove();
+                // engine.playerMove(aiMove);
+                if (engine.getTurn() == 1) engine.flipTurn();
+
+                if (!engine.playerMove(aiMove)) System.out.println("false");
+                engine.flipTurn();
+                System.out.println("Ai moved: " + aiMove);
             }
             turnsLeft--;
         }
