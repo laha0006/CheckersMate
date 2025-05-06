@@ -59,6 +59,7 @@ public class Engine {
             if (turn == black && to > 27 || turn == white && to < 4) { 
                 board.getBoard()[to] = isBlack(board.getBoard()[to]) ? blackKing : whiteKing; 
             }
+            flipTurn();
             return true;
         }
         else {
@@ -78,7 +79,7 @@ public class Engine {
             if (turn == black && finalTo > 27 || turn == white && finalTo < 4) { 
                 board.getBoard()[finalTo] = isBlack(board.getBoard()[finalTo]) ? blackKing : whiteKing; 
             }
-
+            flipTurn();
             return true;
         }
     }

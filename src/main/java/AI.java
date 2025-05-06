@@ -35,8 +35,10 @@ public class AI {
         MinMax best;
         if (isMax) {
             best = new MinMax(Integer.MIN_VALUE, "");
-            if (computer != engine.getTurn())
-                engine.flipTurn();
+//            if (computer != engine.getTurn()) {
+//                System.out.println("FLIPPED TURN");
+//                engine.flipTurn();
+//            }
             List<String> moves = engine.getMovesForTurn();
             for (String move : moves) {
                 state.save();
@@ -49,16 +51,17 @@ public class AI {
                 if (best.score() >= beta) {
                     break;
                 }
-                alpha = Math.max(alpha, result.score());
+                alpha = Math.max(alpha, best.score());
             }
         } else {
             best = new MinMax(Integer.MAX_VALUE, "");
-            if (computer == engine.getTurn())
-                engine.flipTurn();
+//            if (computer == engine.getTurn())
+//                engine.flipTurn();
             List<String> moves = engine.getMovesForTurn();
             for (String move : moves) {
                 state.save();
                 engine.playerMove(move);
+//                engine.flipTurn();
                 MinMax result = minMax(true, alpha, beta, currentDepth + 1, maxDepth);
                 state.load();
                 if (result.score() < best.score()) {
@@ -67,7 +70,7 @@ public class AI {
                 if (best.score() <= alpha) {
                     break;
                 }
-                beta = Math.min(beta, result.score());
+                beta = Math.min(beta, best.score());
             }
 
         }
@@ -82,40 +85,33 @@ public class AI {
             int piece = theBoard[i];
             if (engine.isBlack(piece)) {
                 if (computer == black) {
-                    // if (engine.isKing(piece)) {
-                    //     computerCount += 10;
-                    // } else {
-                    //     computerCount++;
-                    // }
-                    // computerCount = engine.isBlackKing(piece) ? computerCount + 10000 :
-                    computerCount++;
+                     if (engine.isKing(piece)) {
+                         computerCount += 10;
+                     } else {
+                         computerCount++;
+                     }
                 } else {
-                    // if (engine.isKing(piece)) {
-                    //     playerCount += 10;
-                    // } else {
-                    //     playerCount++;
-                    // }
-                    // playerCount = engine.isBlackKing(piece) ? playerCount + 10000 :
-                    playerCount++;
+                     if (engine.isKing(piece)) {
+                         playerCount += 10;
+                     } else {
+                         playerCount++;
+                     }
+
                 }
             }
             if (engine.isWhite(piece)) {
                 if (computer == white) {
-                    // if (engine.isKing(piece)) {
-                    //     computerCount += 10;
-                    // } else {
-                    //     computerCount++;
-                    // }
-                    // computerCount = engine.isWhiteKing(piece) ? computerCount + 10000 :
-                    computerCount++;
+                     if (engine.isKing(piece)) {
+                         computerCount += 10;
+                     } else {
+                         computerCount++;
+                     }
                 } else {
-                    // if (engine.isKing(piece)) {
-                    //     playerCount += 10;
-                    // } else {
-                    //     playerCount++;
-                    // }
-                    // playerCount = engine.isWhiteKing(piece) ? playerCount + 10000 :
-                    playerCount++;
+                     if (engine.isKing(piece)) {
+                         playerCount += 10;
+                     } else {
+                         playerCount++;
+                     }
                 }
             }
         }
