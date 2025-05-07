@@ -31,20 +31,13 @@ public class AI {
             return new MinMax(evaulate(), "");
         }
 
+        List<String> moves = engine.getMovesForTurn();
         Board state = engine.getState();
         MinMax best;
         if (isMax) {
             best = new MinMax(Integer.MIN_VALUE, "");
-//            if (computer != engine.getTurn()) {
-//                System.out.println("FLIPPED TURN");
-//                engine.flipTurn();
-//            }
-            List<String> moves = engine.getMovesForTurn();
             for (String move : moves) {
-                state.save();
-                engine.playerMove(move);
-                MinMax result = minMax(false, alpha, beta, currentDepth + 1, maxDepth);
-                state.load();
+                MinMax result = performVirtualMove(move, alpha, beta, currentDepth, maxDepth);
                 if (result.score() > best.score()) {
                     best = new MinMax(result.score(), move);
                 }
@@ -55,15 +48,8 @@ public class AI {
             }
         } else {
             best = new MinMax(Integer.MAX_VALUE, "");
-//            if (computer == engine.getTurn())
-//                engine.flipTurn();
-            List<String> moves = engine.getMovesForTurn();
             for (String move : moves) {
-                state.save();
-                engine.playerMove(move);
-//                engine.flipTurn();
-                MinMax result = minMax(true, alpha, beta, currentDepth + 1, maxDepth);
-                state.load();
+                MinMax result = performVirtualMove(move, alpha, beta, currentDepth, maxDepth);
                 if (result.score() < best.score()) {
                     best = new MinMax(result.score(), move);
                 }
@@ -116,5 +102,15 @@ public class AI {
             }
         }
         return computerCount - playerCount;
+    }
+
+    public MinMax performVirtualMove(String move, int alpha, int beta, int currentDepth, int maxDepth) {
+        Board state = engine.getState();
+        state.save();
+        engine.playerMove(move);
+        MinMax result = minMax(false, alpha, beta, currentDepth + 1, maxDepth);
+        state.load();
+        engine.flipTurn();
+        return result;
     }
 }

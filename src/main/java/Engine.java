@@ -32,7 +32,9 @@ public class Engine {
     }
 
     public boolean playerMove(String move) {
-        if(!getMovesForTurn().contains(move)) {
+        List<String> theList = getMovesForTurn();
+        if(!theList.contains(move)) {
+//            System.out.println("move: " + move);
             System.out.println("Not in move list!");
             return false;
         }

@@ -45,14 +45,11 @@ public class CheckersMate {
                     System.out.println("Impossible move! Try again!");
                     choice = scanner.nextLine();
                 }
-//                engine.flipTurn();
             } else {
                 String aiMove = ai.getComputerMove();
-                // engine.playerMove(aiMove);
-                if (engine.getTurn() == 1) engine.flipTurn();
 
                 if (!engine.playerMove(aiMove)) System.out.println("false");
-//                engine.flipTurn();
+
                 System.out.println("Ai moved: " + aiMove);
             }
             turnsLeft--;
