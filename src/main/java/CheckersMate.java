@@ -8,15 +8,6 @@ public class CheckersMate {
         Engine engine = new Engine(board,1);
         AI ai = new AI(engine,2);
         DrawBoard draw = new DrawBoard(board);
-//        System.out.println(draw.moveGuide());
-//        System.out.println(draw.printBoard());
-//        System.out.println(engine.getMovesForTurn());
-//        System.out.println(draw.printBoard());
-//        System.out.println(engine.getTurn());
-//        engine.playerMove("8-12");
-//        System.out.println(engine.getTurn());
-//        engine.playerMove(ai.getComputerMove());
-//        System.out.println(engine.getTurn());
 
         int turnsLeft = 100;
 
