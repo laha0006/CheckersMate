@@ -4,48 +4,57 @@ public class CheckersMate {
 
     public static void main(String[] args) {
         Board board = new Board();
-       board.useTestBoard();
-        Engine engine = new Engine(board,1);
-        AI ai = new AI(engine,2);
+        board.useTestBoard();
+        Engine engine = new Engine(board, 1);
+        AI ai = new AI(engine, 2);
         DrawBoard draw = new DrawBoard(board);
 
         int turnsLeft = 100;
 
-        Scanner scanner = new Scanner(System.in);
-        String choice;
-
-        while(turnsLeft > 0) {
-            System.out.println(draw.printBoard());
-            String currentPlayer = engine.getTurn() == 1 ? "Black" : "White";
-            System.out.println("It is " + currentPlayer+"'s turn!");
+        while (turnsLeft > 0) {
+            int choiceNr;
+            boolean choiceConfirmed = false;
 
             List<String> moves = engine.getMovesForTurn();
-            System.out.println("Available moves:");
 
-            for (String move : moves) {
-                System.out.println(move);
-            }
+            
+            String currentPlayer = engine.getTurn() == 1 ? "Black" : "White";
+            System.out.println("It is " + currentPlayer + "'s turn!");
+
+            
 
             if (engine.getTurn() == 1) {
 
-                System.out.println("Make your move " + currentPlayer + "!");
+                System.out.println("Make your move " + currentPlayer + "!\n");
 
-                choice = scanner.nextLine();
+                while (!choiceConfirmed) {
+                    System.out.println("Available moves:");
+                    for (int i = 0; i < moves.size(); i++) {
+                        System.out.println(i + 1 + ": " + moves.get(i));
+                    }
+                    System.out.println(draw.printBoard());
 
-                while (!engine.playerMove(choice)) {
-                    System.out.println("Impossible move! Try again!");
-                    choice = scanner.nextLine();
+                    choiceNr = Input.preview(moves);
+                    System.out.println(draw.printPreviewBoard(moves.get(choiceNr)));
+                    choiceConfirmed = Input.confirm(choiceNr);
+
+                    if (choiceConfirmed) {
+                        engine.playerMove(moves.get(choiceNr));
+                    }
+
                 }
+
             } else {
                 String aiMove = ai.getComputerMove();
 
-                if (!engine.playerMove(aiMove)) System.out.println("false");
+                if (!engine.playerMove(aiMove))
+                    System.out.println("false");
 
                 System.out.println("Ai moved: " + aiMove);
             }
             turnsLeft--;
         }
-//         System.out.println(legalJumpMove(0, 31, testBoard, black, legalJumpMoves));
+        // System.out.println(legalJumpMove(0, 31, testBoard, black, legalJumpMoves));
     }
 
 }
