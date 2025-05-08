@@ -51,6 +51,7 @@ public class CheckersMate {
                     System.out.println("false");
 
                 System.out.println("Ai moved: " + aiMove);
+                System.out.println(draw.printPreviewBoard(aiMove)); // todo discuss this one
             }
             turnsLeft--;
         }

@@ -52,12 +52,18 @@ public class DrawBoard {
         if (i == 0) {
             return "  ";
         }
-        // if the number is smaller than 10 a space is added
-        return (i < 10) ? " " + i : "" + i;
+        if (i == 1)
+            return ColorWrapper.black(" B");
+        if (i == 11)
+            return ColorWrapper.black("BB");
+        if (i == 2)
+            return ColorWrapper.cyan(" W");
+        if (i == 22)
+            return ColorWrapper.cyan("WW");
+        return null;
     }
 
     public String printPreviewBoard(String move) {
-        List<Integer> moveNumbers = parseMoveString(move);
 
         StringBuilder sb = new StringBuilder();
 
@@ -77,22 +83,29 @@ public class DrawBoard {
     }
 
     private String stringPreviewHelper(int piece, int index, String move) {
-        String field;
+        String visual = "";
         // returns an empty spot if there's no piece
         if (piece == 0) {
-            field = "  ";
+            visual = "  ";
             if (parseMoveString(move).contains(index)) {
-                field = ColorWrapper.red(" x");
+                visual = ColorWrapper.red(" x");
             }
         } else {
-            field = (piece < 10) ? " " + piece : "" + piece;
+            if (piece == 1)
+                visual = ColorWrapper.black(" B");
+            if (piece == 11)
+                visual = ColorWrapper.black("BB");
+            if (piece == 2)
+                visual = ColorWrapper.cyan(" W");
+            if (piece == 22)
+                visual = ColorWrapper.cyan("WW");
             if (parseMoveString(move).contains(index)) {
-                field = ColorWrapper.red(field);
+                visual = ColorWrapper.red(visual);
             }
         }
         // if the number is smaller than 10 a space is added
 
-        return field;
+        return visual;
     }
 
     private List<Integer> parseMoveString(String move) {
@@ -129,7 +142,7 @@ public class DrawBoard {
                 numbers.add(to);
                 numbers.add(jumpedIndex);
             }
-        
+
             return numbers;
         }
     }
