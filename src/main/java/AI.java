@@ -28,12 +28,14 @@ public class AI {
     }
 
     public MinMax minMax(boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
-        if (currentDepth == maxDepth) {
+        MinMax best;
+
+        if (currentDepth == maxDepth || winCondition()) {
             return new MinMax(evaluate(), "");
         }
 
         List<String> moves = engine.getMovesForTurn();
-        MinMax best;
+
         if (isMax) {
             best = new MinMax(Integer.MIN_VALUE, "");
             for (String move : moves) {
@@ -74,7 +76,7 @@ public class AI {
 
         for (int piece : theBoard) {
             if (engine.isBlack(piece) || engine.isWhite(piece)) {
-                int value = engine.isKing(piece) ? 10 : 1;
+                int value = engine.isKing(piece) ? 2 : 1;
                 if ((engine.isBlack(piece) && computerColor == black) ||
                     (engine.isWhite(piece) && computerColor == white)) {
                     computerCount += value;
@@ -94,5 +96,16 @@ public class AI {
         state.load();
         engine.flipTurn();
         return result;
+    }
+
+    public boolean winCondition(){
+        /*
+        Board state = engine.getState();
+        for (int i = 0; i < state.boardSize; i++) {
+
+        }
+        11
+         */
+        return false;
     }
 }

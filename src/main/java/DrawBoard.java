@@ -53,13 +53,13 @@ public class DrawBoard {
             return "  ";
         }
         if (i == 1)
-            return ColorWrapper.black(" B");
+            return ColorWrapper.blue(" B");
         if (i == 11)
-            return ColorWrapper.black("BB");
+            return ColorWrapper.blue("BB");
         if (i == 2)
-            return ColorWrapper.cyan(" W");
+            return ColorWrapper.green(" W");
         if (i == 22)
-            return ColorWrapper.cyan("WW");
+            return ColorWrapper.green("WW");
         return null;
     }
 
@@ -85,6 +85,7 @@ public class DrawBoard {
     private String stringPreviewHelper(int piece, int index, String move) {
         String visual = "";
         // returns an empty spot if there's no piece
+        //throws null
         if (piece == 0) {
             visual = "  ";
             if (parseMoveString(move).contains(index)) {
@@ -92,13 +93,13 @@ public class DrawBoard {
             }
         } else {
             if (piece == 1)
-                visual = ColorWrapper.black(" B");
+                visual = ColorWrapper.blue(" B");
             if (piece == 11)
-                visual = ColorWrapper.black("BB");
+                visual = ColorWrapper.blue("BB");
             if (piece == 2)
-                visual = ColorWrapper.cyan(" W");
+                visual = ColorWrapper.green(" W");
             if (piece == 22)
-                visual = ColorWrapper.cyan("WW");
+                visual = ColorWrapper.green("WW");
             if (parseMoveString(move).contains(index)) {
                 visual = ColorWrapper.red(visual);
             }

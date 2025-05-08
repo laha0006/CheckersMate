@@ -4,13 +4,18 @@ public class CheckersMate {
 
     public static void main(String[] args) {
         Board board = new Board();
-        board.useTestBoard();
+
         Engine engine = new Engine(board, 1);
         AI ai = new AI(engine, 2);
         DrawBoard draw = new DrawBoard(board);
 
         int turnsLeft = 100;
 
+        //null pointer position
+        /*
+        board.useTestBoard2();
+        engine.flipTurn();
+         */
         while (turnsLeft > 0) {
             int choiceNr;
             boolean choiceConfirmed = false;

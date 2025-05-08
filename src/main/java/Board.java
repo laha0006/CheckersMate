@@ -47,6 +47,19 @@ public class Board {
                 empty,whitePawn,whitePawn,whitePawn};
     }
 
+    //causes null pointer
+    public void useTestBoard2() {
+        board = new int[]
+                { empty,empty,blackPawn, empty,
+                        empty, empty, empty, empty,
+                        empty,empty,whitePawn,empty,
+                        blackPawn,empty,empty,empty,
+                        empty,empty,blackPawn,empty,
+                        whitePawn,empty,empty,empty,
+                        empty,empty,empty,whitePawn,
+                        empty,blackKing,blackKing,empty};
+    }
+
 
     public void move(int from, int to) {
         oldBoards.add(board.clone());
