@@ -12,7 +12,7 @@ public class Input {
 
         int choice = 0;
 
-        while (choice <= 0 || choice > 3) {
+        while (choice <= 0 || choice >= 3) {
             try {
                 choice = scanner.nextInt();
                 scanner.nextLine();
@@ -20,7 +20,7 @@ public class Input {
                 System.out.println("Invalid input.");
                 scanner.nextLine();
             }
-            if (choice <= 0 || choice > 3) {
+            if (choice <= 0 || choice >= 3) {
                 System.out.println("Please enter 1 or 2:");
             }
         }
