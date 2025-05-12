@@ -16,18 +16,45 @@ public class AI {
 
     int computer;
 
+    long startTime;
+    long maxTime = 15000;
+    long searchCount;
+
     public AI(Engine engine, int computer) {
         this.computer = computer;
         this.engine = engine;
     }
 
     public String getComputerMove() {
-        MinMax aiMove = minMax(true, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 8);
+        searchCount = 0;
+        startTime = System.currentTimeMillis();
+        MinMax best;
+        MinMax aiMove = null;
+        int depth = 0;
+
+        for(int i = 0; i < 18; i++) {
+            best = minMax(true, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, i);
+            if(best != null) {
+                aiMove = best;
+                depth = i;
+            }
+        }
+
         System.out.println(aiMove);
+        System.out.println("depth: " + depth);
+        System.out.println("searchCount: " + searchCount);
         return aiMove.move();
     }
 
     public MinMax minMax(boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
+        searchCount++;
+        long currentTime = System.currentTimeMillis();
+        long diff = currentTime - startTime;
+        if(diff >= maxTime) {
+            System.out.println("RAN OUT OF TIME");
+            return null;
+        }
+
         MinMax best;
         List<String> moves = engine.getMovesForTurn();
 
@@ -40,6 +67,9 @@ public class AI {
             best = new MinMax(Integer.MIN_VALUE, "");
             for (String move : moves) {
                 MinMax result = performVirtualMove(move, false, alpha, beta, currentDepth, maxDepth);
+                if(result == null) {
+                    return null;
+                }
                 if (result.score() > best.score()) {
                     best = new MinMax(result.score(), move);
                 }
@@ -52,6 +82,9 @@ public class AI {
             best = new MinMax(Integer.MAX_VALUE, "");
             for (String move : moves) {
                 MinMax result = performVirtualMove(move, true , alpha, beta, currentDepth, maxDepth);
+                if (result == null) {
+                    return null;
+                }
                 if (result.score() < best.score()) {
                     best = new MinMax(result.score(), move);
                 }

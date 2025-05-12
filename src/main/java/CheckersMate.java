@@ -13,7 +13,7 @@ public class CheckersMate {
 
         //null pointer position
 
-        board.useTestBoard3();
+//        board.useTestBoard3();
 //        engine.flipTurn();
 //        System.out.println(draw.printBoard());
         while (turnsLeft > 0) {
