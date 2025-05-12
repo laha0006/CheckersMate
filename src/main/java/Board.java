@@ -60,6 +60,18 @@ public class Board {
                         empty,blackKing,blackKing,empty};
     }
 
+    public void useTestBoard3() {
+        board = new int[]
+                {   empty,empty,empty, empty,
+                    empty, blackPawn, blackPawn, empty,
+                    whitePawn,empty,empty,empty,
+                    empty,empty,empty,empty,
+                    empty,empty,empty,empty,
+                    empty,empty,blackPawn,empty,
+                    whitePawn,whitePawn,empty,empty,
+                    empty,empty,empty,empty};
+    }
+
 
     public void move(int from, int to) {
         oldBoards.add(board.clone());

@@ -12,21 +12,30 @@ public class CheckersMate {
         int turnsLeft = 100;
 
         //null pointer position
-        /*
-        board.useTestBoard2();
-        engine.flipTurn();
-         */
+
+        board.useTestBoard3();
+//        engine.flipTurn();
+//        System.out.println(draw.printBoard());
         while (turnsLeft > 0) {
             int choiceNr;
             boolean choiceConfirmed = false;
 
-            List<String> moves = engine.getMovesForTurn();
 
-            
+            List<String> moves = engine.getMovesForTurn();
+            if(moves.isEmpty()) {
+                if(engine.getTurn() == 1) {
+                    System.out.println("White Wins");
+                } else {
+                    System.out.println("Black Wins");
+                }
+                break;
+            }
+
+
             String currentPlayer = engine.getTurn() == 1 ? "Black" : "White";
             System.out.println("It is " + currentPlayer + "'s turn!");
 
-            
+
 
             if (engine.getTurn() == 1) {
 
@@ -51,6 +60,12 @@ public class CheckersMate {
 
             } else {
                 String aiMove = ai.getComputerMove();
+//                if(aiMove.isEmpty()) {
+//                    System.out.println("empty");
+//                    System.out.println("Player wins!!!!!!!!!!!!");
+//                    break;
+//                }
+
 
                 if (!engine.playerMove(aiMove))
                     System.out.println("false");
@@ -58,6 +73,7 @@ public class CheckersMate {
                 System.out.println("Ai moved: " + aiMove);
                 System.out.println(draw.printPreviewBoard(aiMove)); // todo discuss this one
             }
+
             turnsLeft--;
         }
         // System.out.println(legalJumpMove(0, 31, testBoard, black, legalJumpMoves));

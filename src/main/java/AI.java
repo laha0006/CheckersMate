@@ -29,12 +29,12 @@ public class AI {
 
     public MinMax minMax(boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
         MinMax best;
+        List<String> moves = engine.getMovesForTurn();
 
-        if (currentDepth == maxDepth || winCondition()) {
+        if (currentDepth == maxDepth || isMovesEmpty(moves)) {
             return new MinMax(evaluate(), "");
         }
 
-        List<String> moves = engine.getMovesForTurn();
 
         if (isMax) {
             best = new MinMax(Integer.MIN_VALUE, "");
@@ -69,10 +69,19 @@ public class AI {
         int computerCount = 0;
         int playerCount = 0;
         int[] theBoard = engine.getState().getBoard();
+        List<String> moves = engine.getMovesForTurn();
+        int turn = engine.getTurn();
 
         // Determine which color is the computer and which is the player
         int computerColor = computer;
         int playerColor = (computer == black) ? white : black;
+
+        if (moves.isEmpty() && turn == computerColor) {
+            return -1000;
+        }
+        if (moves.isEmpty() && turn == playerColor) {
+            return 1000;
+        }
 
         for (int piece : theBoard) {
             if (engine.isBlack(piece) || engine.isWhite(piece)) {
@@ -85,6 +94,14 @@ public class AI {
                 }
             }
         }
+
+        if(playerCount == 0) {
+            return 1000;
+        }
+        if(computerCount == 0) {
+            return -1000;
+        }
+
         return computerCount - playerCount;
     }
 
@@ -96,6 +113,10 @@ public class AI {
         state.load();
         engine.flipTurn();
         return result;
+    }
+
+    public boolean isMovesEmpty(List<String> moves) {
+        return moves.isEmpty();
     }
 
     public boolean winCondition(){
