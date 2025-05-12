@@ -25,6 +25,10 @@ public class AI {
         this.engine = engine;
     }
 
+    public void setMaxTime(long maxTime) {
+        this.maxTime = maxTime;
+    }
+
     public String getComputerMove() {
         searchCount = 0;
         startTime = System.currentTimeMillis();
@@ -150,16 +154,5 @@ public class AI {
 
     public boolean isMovesEmpty(List<String> moves) {
         return moves.isEmpty();
-    }
-
-    public boolean winCondition(){
-        /*
-        Board state = engine.getState();
-        for (int i = 0; i < state.boardSize; i++) {
-
-        }
-        11
-         */
-        return false;
     }
 }
