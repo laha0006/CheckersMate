@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DrawBoard {
 
@@ -52,14 +50,18 @@ public class DrawBoard {
         if (i == 0) {
             return "  ";
         }
-        if (i == 1)
+        if (i == 1) {
             return ColorWrapper.blue(" B");
-        if (i == 11)
+        }
+        if (i == 11) {
             return ColorWrapper.blue("BB");
-        if (i == 2)
+        }
+        if (i == 2) {
             return ColorWrapper.green(" W");
-        if (i == 22)
+        }
+        if (i == 22) {
             return ColorWrapper.green("WW");
+        }
         return null;
     }
 
@@ -84,25 +86,55 @@ public class DrawBoard {
 
     private String stringPreviewHelper(int piece, int index, String move) {
         String visual = "";
-        // returns an empty spot if there's no piece
-        //throws null
+
         if (piece == 0) {
             visual = "  ";
-            if (parseMoveString(move).contains(index)) {
+            if (indexIsPartOfMove(index, move)) {
                 visual = ColorWrapper.red(" x");
             }
+
         } else {
-            if (piece == 1)
-                visual = ColorWrapper.blue(" B");
-            if (piece == 11)
-                visual = ColorWrapper.blue("BB");
-            if (piece == 2)
-                visual = ColorWrapper.green(" W");
-            if (piece == 22)
-                visual = ColorWrapper.green("WW");
-            if (parseMoveString(move).contains(index)) {
+
+            if (indexIsPartOfMove(index, move)) {
                 visual = ColorWrapper.red(visual);
             }
+            if (piece == 1) {
+                if (indexFirstInMove(index, move)) {
+                    ColorWrapper.red(" B");
+                }
+                if (indexIsLastInMove(index, move)) {
+                    ColorWrapper.red(" x");
+                }
+                visual = indexIsPartOfMove(index, move) ? ColorWrapper.red(" B") : ColorWrapper.blue(" B");
+            }
+            if (piece == 11) {
+                if (indexFirstInMove(index, move)) {
+                    ColorWrapper.red("BB");
+                }
+                if (indexIsLastInMove(index, move)) {
+                    ColorWrapper.red(" x");
+                }
+                visual = indexIsPartOfMove(index, move) ? ColorWrapper.red("BB") : ColorWrapper.blue("BB");
+            }
+            if (piece == 2) {
+                if (indexFirstInMove(index, move)) {
+                    ColorWrapper.red(" W");
+                }
+                if (indexIsLastInMove(index, move)) {
+                    ColorWrapper.red(" x");
+                }
+                visual = indexIsPartOfMove(index, move) ? ColorWrapper.red(" W") : ColorWrapper.green(" W");
+            }
+            if (piece == 22) {
+                if (indexFirstInMove(index, move)) {
+                    ColorWrapper.red("WW");
+                }
+                if (indexIsLastInMove(index, move)) {
+                    ColorWrapper.red(" x");
+                }
+                visual = indexIsPartOfMove(index, move) ? ColorWrapper.red("WW") : ColorWrapper.green("WW");
+            }
+
         }
         // if the number is smaller than 10 a space is added
 
@@ -123,29 +155,73 @@ public class DrawBoard {
             return null;
         }
 
-        int length = parsedString.length;
-
         if (moveType == 1) {
             int from = Integer.parseInt(parsedString[0]);
             int to = Integer.parseInt(parsedString[1]);
             return List.of(from, to);
         } else {
+            int length = parsedString.length;
             int jumps = length - 1;
             int from;
             int to;
+            int jumpedIndex;
             List<Integer> numbers = new ArrayList<>();
 
             for (int i = 0; i < jumps; i++) {
                 from = Integer.parseInt(parsedString[i]);
                 to = Integer.parseInt(parsedString[i + 1]);
-                int jumpedIndex = JUMP_OVER_INDEX_MAP.get(from + to);
-                numbers.add(from);
-                numbers.add(to);
+                jumpedIndex = JUMP_OVER_INDEX_MAP.get(from + to);
+
+                if (i == 0) { // first iteration
+                    numbers.add(from);
+                }
                 numbers.add(jumpedIndex);
+                numbers.add(to);
             }
 
             return numbers;
         }
     }
 
+    private boolean indexIsPartOfMove(int index, String move) {
+        return parseMoveString(move).contains(index);
+    }
+
+    private boolean indexFirstInMove(int index, String move) {
+        return parseMoveString(move).getFirst() == index;
+    }
+
+    private boolean indexIsLastInMove(int index, String move) {
+        return parseMoveString(move).getLast() == index;
+    }
+
+
+    public String printBoardString() {
+        StringBuilder sb = new StringBuilder("board = new int[]{");
+
+        for (int i = 0; i < boardSize; i++) {
+            int pieceType = board.getBoard()[i];
+
+            if (pieceType == 0) {
+                sb.append("empty");
+            }
+            if (pieceType == 1) {
+                sb.append("blackPawn");
+            }
+            if (pieceType == 11) {
+                sb.append("blackKing");
+            }
+            if (pieceType == 2) {
+                sb.append("whitePawn");
+            }
+            if (pieceType == 22) {
+                sb.append("whiteKing");
+            }
+            if (i != boardSize-1) {
+                sb.append(",");
+            }    
+        }
+        sb.append("};");
+        return sb.toString();
+    }
 }

@@ -50,6 +50,7 @@ public class CheckersMate {
                     for (int i = 0; i < moves.size(); i++) {
                         System.out.println(i + 1 + ": " + moves.get(i));
                     }
+                    System.out.println("Copy this if Kristoffer fucked up:  " + draw.printBoardString());
                     System.out.println(draw.printBoard());
 
                     choiceNr = Input.preview(scanner,moves);

@@ -22,6 +22,7 @@ public class Board {
 
     public Board() {
         board = createStartBoard();
+        // insert board-fuckup-string here...
     }
 
     public int[] createStartBoard() {
