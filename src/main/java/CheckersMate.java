@@ -28,9 +28,9 @@ public class CheckersMate {
             List<String> moves = engine.getMovesForTurn();
             if(moves.isEmpty()) {
                 if(engine.getTurn() == player) {
-                    System.out.println("White Wins");
+                    System.out.println("Player Wins");
                 } else {
-                    System.out.println("Black Wins");
+                    System.out.println("Computer Wins");
                 }
                 break;
             }
