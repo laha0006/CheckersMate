@@ -102,6 +102,7 @@ public class AI {
         return best;
     }
 
+    //TODO AI always tries to get the White player (regardless of who is playing them) to win
     public int evaluate() {
         int computerCount = 0;
         int playerCount = 0;
