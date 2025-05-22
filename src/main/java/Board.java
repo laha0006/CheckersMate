@@ -1,18 +1,31 @@
-public class Board {
-    //white pieces
-    public static final int black = 1;
-    public static final int blackPawn = 1;
-    public static final int blackKing = 11;
-    //black pieces
-    public static final int white = 2;
-    public static final int whitePawn = 2;
-    public static final int whiteKing = 22;
-    //empty spots on the board
-    public static final int empty = 0;
-    //board size (this should not change)
-    public static final int boardSize = 32;
+import java.util.ArrayList;
+import java.util.List;
 
-    public static int[] createStartBoard() {
+public class Board {
+    public final int black = 1;
+    public final int blackPawn = 1;
+    public final int blackKing = 11;
+
+    public final int white = 2;
+    public final int whitePawn = 2;
+    public final int whiteKing = 22;
+
+    public final int empty = 0;
+    public final int boardSize = 32;
+
+
+    public int[] board;
+    public int[] old;
+    public int[] saved;
+    List<int[]> oldBoards = new ArrayList<>();
+    List<int[]> savedBoards = new ArrayList<>();
+
+    public Board() {
+        board = createStartBoard();
+        // insert board-fuckup-string here...
+    }
+
+    public int[] createStartBoard() {
         int[] boardState = new int[boardSize];
         for (int i = 0; i < 12; i++) {
             boardState[i] = blackPawn;
@@ -23,50 +36,84 @@ public class Board {
         return boardState;
     }
 
-    public static String moveGuide(){
-        return """
-                +-------------------------+
-                | --  0 --  1 --  2 --  3 |
-                |  4 --  5 --  6 --  7 -- |
-                | --  8 --  9 -- 10 -- 11 |
-                | 12 -- 13 -- 14 -- 15 -- |
-                | -- 16 -- 17 -- 18 -- 19 |
-                | 20 -- 21 -- 22 -- 23 -- |
-                | -- 24 -- 25 -- 26 -- 27 |
-                | 28 -- 29 -- 30 -- 31 -- |
-                +-------------------------+
-                """;
+    public void useTestBoard() {
+        board = new int[]
+                { blackPawn,empty,whiteKing,blackPawn,
+                blackPawn,whitePawn,whitePawn,blackPawn,
+                  blackKing,blackPawn,empty,blackPawn,
+                empty,whitePawn,whitePawn,empty,
+                  empty,empty,empty,empty,
+                whitePawn,whitePawn,whitePawn,whitePawn,
+                  blackPawn,empty,empty,empty,
+                empty,whitePawn,whitePawn,whitePawn};
     }
 
-    public static String printBoard(int[] b){
-        StringBuilder sb = new StringBuilder();
+    //causes null pointer
+    public void useTestBoard2() {
+        board = new int[]
+                { empty,empty,blackPawn, empty,
+                        empty, empty, empty, empty,
+                        empty,empty,whitePawn,empty,
+                        blackPawn,empty,empty,empty,
+                        empty,empty,blackPawn,empty,
+                        whitePawn,empty,empty,empty,
+                        empty,empty,empty,whitePawn,
+                        empty,blackKing,blackKing,empty};
+    }
 
-        sb.append("+-------------------------+").append("\n| -- ");
-        for (int i = 0; i < boardSize; i++) {
-            if(i == 3 || i == 11 || i == 19 || i == 27){
-                sb.append(stringHelper(b[i])).append(" |").append("\n| ");
-            }
-            else if(i == 7 || i == 15 || i == 23){
-                sb.append(stringHelper(b[i])).append(" -- |").append("\n| -- ");
-            }
-            else{
-                sb.append(stringHelper(b[i])).append(" -- ");
-            }
+    public void useTestBoard3() {
+        board = new int[]
+                {   empty,empty,empty, empty,
+                    empty, blackPawn, blackPawn, empty,
+                    whitePawn,empty,empty,empty,
+                    empty,empty,empty,empty,
+                    empty,empty,empty,empty,
+                    empty,empty,blackPawn,empty,
+                    whitePawn,whitePawn,empty,empty,
+                    empty,empty,empty,empty};
+    }
+
+
+    public void move(int from, int to) {
+        oldBoards.add(board.clone());
+        int piece = board[from];
+        board[from] = empty;
+        board[to] = piece;
+    }
+
+
+    public void reset() {
+        board = oldBoards.removeLast();
+    }
+
+    public void singleJump(int from, int to, int jumpOverIndex) {
+        oldBoards.add(board.clone());
+        int piece = board[from];
+        board[from] = empty;
+        board[to] = piece;
+        board[jumpOverIndex] = empty;
+    }
+
+    public void jump(int from, int to, int[] eliminations) {
+        oldBoards.add(board.clone());
+        int piece = board[from];
+        board[from] = empty;
+        board[to] = piece;
+
+        for (int boardPos : eliminations) {
+            board[boardPos] = empty;
         }
-        sb.append("|").append("\n+-------------------------+");
-
-
-        return sb.toString();
     }
 
-    private static String stringHelper(int i){
-        //returns an empty spot if there's no piece
-        if(i == 0){
-            return "  ";
-        }
-        //if the number is smaller than 10 a space is added
-        return (i < 10) ? " "+i : ""+i;
+    public int[] getBoard() {
+        return board;
     }
 
-    
+    public void save() {
+        savedBoards.add(board.clone());
+    }
+
+    public void load() {
+        board = savedBoards.removeLast();
+    }
 }

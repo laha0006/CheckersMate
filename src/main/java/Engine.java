@@ -5,16 +5,36 @@ import java.util.Map;
 import java.util.Set;
 
 public class Engine {
+    public final int black = 1;
+    public final int blackPawn = 1;
+    public final int blackKing = 11;
 
-    private static final Map<Integer, Set<Integer>> LEGAL_SIMPLE_MOVE_MAP = MoveMaps.createLegalSimpleMoveMap();
-    private static final Map<Integer, Set<Integer>> LEGAL_JUMP_MOVE_MAP = MoveMaps.createLegalJumpMoveMap();
-    private static final Map<Integer, Integer> JUMP_OVER_INDEX_MAP = MoveMaps.createJumpOverIndexMap();
+    public final int white = 2;
+    public final int whitePawn = 2;
+    public final int whiteKing = 22;
 
-    public static boolean playerMove(int[] board, int turn, String move) {
-        if(!getMovesForTurn(board, turn).contains(move)) {
+    public final int empty = 0;
+
+    private final Map<Integer, Set<Integer>> LEGAL_SIMPLE_MOVE_MAP = MoveMaps.createLegalSimpleMoveMap();
+    private final Map<Integer, Set<Integer>> LEGAL_JUMP_MOVE_MAP = MoveMaps.createLegalJumpMoveMap();
+    private final Map<Integer, Integer> JUMP_OVER_INDEX_MAP = MoveMaps.createJumpOverIndexMap();
+
+    public Board board;
+    int turn;
+
+    public Engine(Board board, int startTurn) {
+        this.board = board;
+        turn = startTurn;
+    }
+
+    public void flipTurn() {
+        turn = turn == black ? white : black;
+    }
+
+    public boolean playerMove(String move) {
+        List<String> theList = getMovesForTurn();
+        if(!theList.contains(move)) {
             System.out.println("Not in move list!");
-            System.out.println(getMovesForTurn(board, turn));
-            //move not possible
             return false;
         }
 
@@ -31,38 +51,48 @@ public class Engine {
             return false;
         }
 
-        int from = Integer.parseInt(parsedString[0]);
-        int to = Integer.parseInt(parsedString[1]);
+        int length = parsedString.length;
 
         if(moveType == 1){
-            //simple move
-            board[to] = board[from];
-            board[from] = Board.empty;
+            int from = Integer.parseInt(parsedString[0]);
+            int to = Integer.parseInt(parsedString[1]);
+            board.move(from, to);
+            if (turn == black && to > 27 || turn == white && to < 4) { 
+                board.getBoard()[to] = isBlack(board.getBoard()[to]) ? blackKing : whiteKing; 
+            }
+            flipTurn();
             return true;
         }
         else {
-            //make jump move
-            int sum = from + to;
-            int jumpOverIndex = JUMP_OVER_INDEX_MAP.get(sum);
-            board[to] = board[from];
-            board[from] = Board.empty;
-            board[jumpOverIndex] = Board.empty;
+            int jumps = length - 1;
+            int from;
+            int to;
+            int[] eliminations = new int[jumps];
+
+            for(int i = 0; i < jumps; i++) {
+                from = Integer.parseInt(parsedString[i]);
+                to = Integer.parseInt(parsedString[i+1]);
+                eliminations[i] = JUMP_OVER_INDEX_MAP.get(from+to);
+            }
+            int firstFrom = Integer.parseInt(parsedString[0]);
+            int finalTo = Integer.parseInt(parsedString[length - 1]);
+            board.jump(firstFrom,finalTo, eliminations);
+            if (turn == black && finalTo > 27 || turn == white && finalTo < 4) { 
+                board.getBoard()[finalTo] = isBlack(board.getBoard()[finalTo]) ? blackKing : whiteKing; 
+            }
+            flipTurn();
             return true;
         }
-
-
-        // System.out.println("FROM: " + from);
-        // System.out.println("TO: " + to);
     }
 
-    public static boolean isLegalSimpleMove(int from, int to, int[] board, int turn) {
+    public boolean isLegalSimpleMove(int from, int to) {
         Set<Integer> moves = LEGAL_SIMPLE_MOVE_MAP.get(from);
-        int boardFromPosition = board[from];
-        int boardToPosition = board[to];
+        int boardFromPosition = board.getBoard()[from];
+        int boardToPosition = board.getBoard()[to];
 
         int difference = to - from;
 
-        if (!turnAndPieceMatches(turn, boardFromPosition)) {
+        if (!turnAndPieceMatches(boardFromPosition)) {
             return false;
         }
         
@@ -85,90 +115,92 @@ public class Engine {
         return true;
     }
 
-    public static boolean isLegalJumpMove(int from, int to, int[] board, int turn) {
+    public boolean isLegalJumpMove(int from, int to) {
         //
         // System.out.println("from:" + from + " to:" + to);
         int sum = from + to;
         int diff = from - to;
         int jumpOverIndex = JUMP_OVER_INDEX_MAP.get(sum);
-        int fromPiece = board[from];
-        int jumpOverPiece = board[jumpOverIndex];
+        int fromPiece = board.getBoard()[from];
+        int jumpOverPiece = board.getBoard()[jumpOverIndex];
 
-        if (!isEmpty(board[to])) {
+        if (!isEmpty(board.getBoard()[to])) {
             return false;
         }
 
         // true
-        if (turn == Board.black) {
+        if (turn == black) {
             return isWhite(jumpOverPiece) && isBlack(fromPiece) && (diff < 0 || isBlackKing(fromPiece));
         }
-        if (turn == Board.white) {
+        if (turn == white) {
             return isBlack(jumpOverPiece) && isWhite(fromPiece) && (diff > 0 || isWhiteKing(fromPiece));
         }
         return true;
     }
 
-    public static boolean isBlack(int piece) {
-        return piece == Board.blackPawn || isBlackKing(piece);
+    public boolean isBlack(int piece) {
+        return piece == blackPawn || isBlackKing(piece);
     }
 
-    public static boolean isWhite(int piece) {
-        return piece == Board.whitePawn || isWhiteKing(piece);
+    public boolean isWhite(int piece) {
+        return piece == whitePawn || isWhiteKing(piece);
     }
 
-    public static boolean isBlackKing(int piece) {
-        return piece == Board.blackKing;
+    public boolean isBlackKing(int piece) {
+        return piece == blackKing;
     }
 
-    public static boolean isWhiteKing(int piece) {
-        return piece == Board.whiteKing;
+    public boolean isWhiteKing(int piece) {
+        return piece == whiteKing;
     }
 
-    public static boolean isBlackPawn(int piece) {
-        return piece == Board.blackPawn;
+    public boolean isBlackPawn(int piece) {
+        return piece == blackPawn;
     }
 
-    public static boolean isWhitePawn(int piece) {
-        return piece == Board.whitePawn;
+    public boolean isWhitePawn(int piece) {
+        return piece == whitePawn;
     }
 
-    public static boolean isKing(int piece) {
+    public boolean isKing(int piece) {
         return isBlackKing(piece) || isWhiteKing(piece);
     }
 
-    public static boolean isEmpty(int tile) {
-        return tile == Board.empty;
+    public boolean isEmpty(int tile) {
+        return tile == empty;
     }
 
-    public static boolean turnAndPieceMatches(int turn, int piece) {
-        return (turn == Board.black && isBlack(piece)) || (turn == Board.white && isWhite(piece));
+    public boolean turnAndPieceMatches(int piece) {
+        return (turn == black && isBlack(piece)) || (turn == white && isWhite(piece));
     }
 
-    public static List<String> getMovesForTurn(int[] board, int turn) {
-        List<String> moveStrings = getJumpMovesForTurn(board, turn);
+    public List<String> getMovesForTurn() {
+        List<String> moveStrings = getJumpMovesForTurn();
 
         if (moveStrings.isEmpty()) {
-            moveStrings = getSimpleMovesForTurn(board, turn);
+            moveStrings = getSimpleMovesForTurn();
         }
         return moveStrings;
     }
 
-    public static List<String> getJumpMovesForTurn(int[] board, int turn) {
+    public List<String> getJumpMovesForTurn() {
         List<String> jumpMoves = new ArrayList<>();
-        for (int i = 0; i < Board.boardSize; i++) {
-            jumpMoves.addAll(addJumpMoveSequenceStrings(i, board, turn, Integer.toString(i), new HashSet<String>(),
+
+        for (int i = 0; i < board.getBoard().length; i++) {
+
+            jumpMoves.addAll(addJumpMoveSequenceStrings(i,Integer.toString(i), new HashSet<String>(),
                     new ArrayList<String>()));
         }
         return jumpMoves;
     }
 
-    public static List<String> getSimpleMovesForTurn(int[] board, int turn) {
+    public List<String> getSimpleMovesForTurn() {
         List<String> simpleMoveStrings = new ArrayList<>();
-        for (int position = 0; position < board.length; position++) {
+        for (int position = 0; position < board.getBoard().length; position++) {
             Set<Integer> moves = LEGAL_SIMPLE_MOVE_MAP.get(position);
             for (int move : moves) {
-                if (isLegalSimpleMove(position, move, board, turn)) {
-                    String moveString = (Integer.toString(position) + "-" + Integer.toString(move));
+                if (isLegalSimpleMove(position, move)) {
+                    String moveString = (position + "-" + move);
                     simpleMoveStrings.add(moveString);
                 }
             }
@@ -176,28 +208,18 @@ public class Engine {
         return simpleMoveStrings;
     }
 
-    public static List<String> addJumpMoveSequenceStrings(int position, int[] board, int turn, String jumpSequence,
-            Set<String> visisted, List<String> jumpSequences) {
+    public List<String> addJumpMoveSequenceStrings(int position, String jumpSequence, Set<String> visisted, List<String> jumpSequences) {
         Set<Integer> moves = LEGAL_JUMP_MOVE_MAP.get(position);
         boolean jumped = false;
         for (int move : moves) {
-            String moveString = Integer.toString(position) + Integer.toString(move);
-            String moveStringTwo = Integer.toString(move) + Integer.toString(position);
-            if (isLegalJumpMove(position, move, board, turn) && !visisted.contains(moveString)) {
-                visisted.add(moveString); // TODO: consider if using jumpOverIndex makes sense here.
-                visisted.add(moveStringTwo);
-                // System.out.println("moveString:" + moveString);
-                // System.out.println("moveStringTwo:" + moveStringTwo);
-                // System.out.println();
+            if (isLegalJumpMove(position, move)) {
                 String oldSequence = jumpSequence;
                 jumpSequence += "x" + move;
                 jumped = true;
-                board[move] = board[position];
-                int old = board[position];
-                board[position] = Board.empty;
-                addJumpMoveSequenceStrings(move, board, turn, jumpSequence, visisted, jumpSequences);
-                board[move] = Board.empty;
-                board[position] = old;
+                int sum = position + move;
+                board.singleJump(position, move, JUMP_OVER_INDEX_MAP.get(sum));
+                addJumpMoveSequenceStrings(move, jumpSequence, visisted, jumpSequences);
+                board.reset();
                 jumpSequence = oldSequence;
             }
 
@@ -206,41 +228,40 @@ public class Engine {
         if (!jumped && jumpSequence.contains("x")) {
             jumpSequences.add(jumpSequence);
         }
-
         return jumpSequences;
     }
 
-    public static List<Integer> getMovablePieces(int[] board, int turn) {
+    public List<Integer> getMovablePieces() {
         List<Integer> movablePieces = new ArrayList<>();
         Set<Integer> moves;
 
         int pieceType;
-        for (int pieceIndex = 0; pieceIndex < board.length; pieceIndex++) {
-            pieceType = board[pieceIndex];
-            if (!turnAndPieceMatches(turn, pieceType)) {
+        for (int pieceIndex = 0; pieceIndex < board.getBoard().length; pieceIndex++) {
+            pieceType = board.getBoard()[pieceIndex];
+            if (!turnAndPieceMatches(pieceType)) {
                 continue;
             }
             
             moves = LEGAL_JUMP_MOVE_MAP.get(pieceIndex);
 
             for (int jumpMove : moves) {
-                if (isLegalJumpMove(pieceIndex, jumpMove, board, turn)) {
+                if (isLegalJumpMove(pieceIndex, jumpMove)) {
                     movablePieces.add(pieceIndex);
-                    continue;
+                    break;
                 }
             }
         }
         if (movablePieces.isEmpty()) {
-            for (int pieceIndex = 0; pieceIndex < board.length; pieceIndex++) {
-                pieceType = board[pieceIndex];
-                if (!turnAndPieceMatches(turn, pieceType)) {
+            for (int pieceIndex = 0; pieceIndex < board.getBoard().length; pieceIndex++) {
+                pieceType = board.getBoard()[pieceIndex];
+                if (!turnAndPieceMatches(pieceType)) {
                     continue;
                 }
 
                 moves = LEGAL_SIMPLE_MOVE_MAP.get(pieceIndex);
 
                 for (int simpleMove : moves) {
-                    if (isLegalSimpleMove(pieceIndex, simpleMove, board, turn)) {
+                    if (isLegalSimpleMove(pieceIndex, simpleMove)) {
                         movablePieces.add(pieceIndex);
                         break;
                     }
@@ -250,7 +271,15 @@ public class Engine {
         return movablePieces;
     }
 
-    // public static List<String> getAvailableMovesForPosition(int position, int[]
+    public int getTurn() {
+        return turn;
+    }
+
+    public Board getState() {
+        return board;
+    }
+
+    // public List<String> getAvailableMovesForPosition(int position, int[]
     // board, int turn) {
     // List<String> availableMoves = new ArrayList<>();
 
@@ -263,7 +292,7 @@ public class Engine {
     // return
     // }
 
-    // private static List<String> getJumpSequences(int position, int[] board, int
+    // private List<String> getJumpSequences(int position, int[] board, int
     // turn) {
     // Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
     // Set<Integer> jumpMoves = jumpMoveSet.get(position);
@@ -279,7 +308,7 @@ public class Engine {
     // // 3. if no legal moves are found, add move to list, and go to 1
     // }
 
-    // private static List<String> getMovesForPosition(int position, int turn, int[]
+    // private List<String> getMovesForPosition(int position, int turn, int[]
     // board) {
     // Map<Integer, Set<Integer>> simpleMoveSet = CreateLegalSimpleMoveMap();
     // Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
