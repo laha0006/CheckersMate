@@ -19,8 +19,8 @@ public class Engine {
     private final Map<Integer, Set<Integer>> LEGAL_JUMP_MOVE_MAP = MoveMaps.createLegalJumpMoveMap();
     private final Map<Integer, Integer> JUMP_OVER_INDEX_MAP = MoveMaps.createJumpOverIndexMap();
 
-    public Board board;
-    int turn;
+    private final Board board;
+    private int turn;
 
     public Engine(Board board, int startTurn) {
         this.board = board;
@@ -85,7 +85,7 @@ public class Engine {
         }
     }
 
-    public boolean isLegalSimpleMove(int from, int to) {
+    private boolean isLegalSimpleMove(int from, int to) {
         Set<Integer> moves = LEGAL_SIMPLE_MOVE_MAP.get(from);
         int boardFromPosition = board.getBoard()[from];
         int boardToPosition = board.getBoard()[to];
@@ -115,7 +115,7 @@ public class Engine {
         return true;
     }
 
-    public boolean isLegalJumpMove(int from, int to) {
+    private boolean isLegalJumpMove(int from, int to) {
         //
         // System.out.println("from:" + from + " to:" + to);
         int sum = from + to;
@@ -146,19 +146,20 @@ public class Engine {
         return piece == whitePawn || isWhiteKing(piece);
     }
 
-    public boolean isBlackKing(int piece) {
+
+    private boolean isBlackKing(int piece) {
         return piece == blackKing;
     }
 
-    public boolean isWhiteKing(int piece) {
+    private boolean isWhiteKing(int piece) {
         return piece == whiteKing;
     }
 
-    public boolean isBlackPawn(int piece) {
+    private boolean isBlackPawn(int piece) {
         return piece == blackPawn;
     }
 
-    public boolean isWhitePawn(int piece) {
+    private boolean isWhitePawn(int piece) {
         return piece == whitePawn;
     }
 
@@ -166,11 +167,11 @@ public class Engine {
         return isBlackKing(piece) || isWhiteKing(piece);
     }
 
-    public boolean isEmpty(int tile) {
+    private boolean isEmpty(int tile) {
         return tile == empty;
     }
 
-    public boolean turnAndPieceMatches(int piece) {
+    private boolean turnAndPieceMatches(int piece) {
         return (turn == black && isBlack(piece)) || (turn == white && isWhite(piece));
     }
 
@@ -183,7 +184,7 @@ public class Engine {
         return moveStrings;
     }
 
-    public List<String> getJumpMovesForTurn() {
+    private List<String> getJumpMovesForTurn() {
         List<String> jumpMoves = new ArrayList<>();
 
         for (int i = 0; i < board.getBoard().length; i++) {
@@ -194,7 +195,7 @@ public class Engine {
         return jumpMoves;
     }
 
-    public List<String> getSimpleMovesForTurn() {
+    private List<String> getSimpleMovesForTurn() {
         List<String> simpleMoveStrings = new ArrayList<>();
         for (int position = 0; position < board.getBoard().length; position++) {
             Set<Integer> moves = LEGAL_SIMPLE_MOVE_MAP.get(position);
@@ -208,7 +209,7 @@ public class Engine {
         return simpleMoveStrings;
     }
 
-    public List<String> addJumpMoveSequenceStrings(int position, String jumpSequence, Set<String> visisted, List<String> jumpSequences) {
+    private List<String> addJumpMoveSequenceStrings(int position, String jumpSequence, Set<String> visisted, List<String> jumpSequences) {
         Set<Integer> moves = LEGAL_JUMP_MOVE_MAP.get(position);
         boolean jumped = false;
         for (int move : moves) {
@@ -231,45 +232,6 @@ public class Engine {
         return jumpSequences;
     }
 
-    public List<Integer> getMovablePieces() {
-        List<Integer> movablePieces = new ArrayList<>();
-        Set<Integer> moves;
-
-        int pieceType;
-        for (int pieceIndex = 0; pieceIndex < board.getBoard().length; pieceIndex++) {
-            pieceType = board.getBoard()[pieceIndex];
-            if (!turnAndPieceMatches(pieceType)) {
-                continue;
-            }
-            
-            moves = LEGAL_JUMP_MOVE_MAP.get(pieceIndex);
-
-            for (int jumpMove : moves) {
-                if (isLegalJumpMove(pieceIndex, jumpMove)) {
-                    movablePieces.add(pieceIndex);
-                    break;
-                }
-            }
-        }
-        if (movablePieces.isEmpty()) {
-            for (int pieceIndex = 0; pieceIndex < board.getBoard().length; pieceIndex++) {
-                pieceType = board.getBoard()[pieceIndex];
-                if (!turnAndPieceMatches(pieceType)) {
-                    continue;
-                }
-
-                moves = LEGAL_SIMPLE_MOVE_MAP.get(pieceIndex);
-
-                for (int simpleMove : moves) {
-                    if (isLegalSimpleMove(pieceIndex, simpleMove)) {
-                        movablePieces.add(pieceIndex);
-                        break;
-                    }
-                }
-            }
-        }
-        return movablePieces;
-    }
 
     public int getTurn() {
         return turn;
@@ -279,63 +241,106 @@ public class Engine {
         return board;
     }
 
-    // public List<String> getAvailableMovesForPosition(int position, int[]
-    // board, int turn) {
-    // List<String> availableMoves = new ArrayList<>();
+//  public List<Integer> getMovablePieces() {
+//        List<Integer> movablePieces = new ArrayList<>();
+//        Set<Integer> moves;
+//
+//        int pieceType;
+//        for (int pieceIndex = 0; pieceIndex < board.getBoard().length; pieceIndex++) {
+//            pieceType = board.getBoard()[pieceIndex];
+//            if (!turnAndPieceMatches(pieceType)) {
+//                continue;
+//            }
+//
+//            moves = LEGAL_JUMP_MOVE_MAP.get(pieceIndex);
+//
+//            for (int jumpMove : moves) {
+//                if (isLegalJumpMove(pieceIndex, jumpMove)) {
+//                    movablePieces.add(pieceIndex);
+//                    break;
+//                }
+//            }
+//        }
+//        if (movablePieces.isEmpty()) {
+//            for (int pieceIndex = 0; pieceIndex < board.getBoard().length; pieceIndex++) {
+//                pieceType = board.getBoard()[pieceIndex];
+//                if (!turnAndPieceMatches(pieceType)) {
+//                    continue;
+//                }
+//
+//                moves = LEGAL_SIMPLE_MOVE_MAP.get(pieceIndex);
+//
+//                for (int simpleMove : moves) {
+//                    if (isLegalSimpleMove(pieceIndex, simpleMove)) {
+//                        movablePieces.add(pieceIndex);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        return movablePieces;
+//    }
+//
 
-    // availableMoves.addAll(addJumpSequenceStrings(position, board, turn,
-    // CreateLegalJumpMoveMap(), Integer.toString(position), new HashSet<String>(),
-    // new ArrayList<String>()));
-    // if (availableMoves.isEmpty()) {
-    // availableMoves.addAll(getSimpleMoveStrings())
-    // }
-    // return
-    // }
 
-    // private List<String> getJumpSequences(int position, int[] board, int
-    // turn) {
-    // Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
-    // Set<Integer> jumpMoves = jumpMoveSet.get(position);
-    //
-    // for (Integer jumpDestination : jumpMoves) {
-    // String move;
-    // if (legalJumpMove(position, jumpDestination, board, turn, jumpMoveSet)) {
-    // move = position + "x" + jumpDestination;
-    // }
-    // }
-    // // 1. look at all possible jump moves from position
-    // // 2. if we find a legal move, append to move, and go to 1
-    // // 3. if no legal moves are found, add move to list, and go to 1
-    // }
+//     public List<String> getAvailableMovesForPosition(int position, int[]
+//     board, int turn) {
+//     List<String> availableMoves = new ArrayList<>();
+//
+//     availableMoves.addAll(addJumpSequenceStrings(position, board, turn,
+//     CreateLegalJumpMoveMap(), Integer.toString(position), new HashSet<String>(),
+//     new ArrayList<String>()));
+//     if (availableMoves.isEmpty()) {
+//     availableMoves.addAll(getSimpleMoveStrings())
+//     }
+//     return
+//     }
+//
 
-    // private List<String> getMovesForPosition(int position, int turn, int[]
-    // board) {
-    // Map<Integer, Set<Integer>> simpleMoveSet = CreateLegalSimpleMoveMap();
-    // Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
-    //
-    // Set<Integer> simpleMoves = simpleMoveSet.get(position);
-    // Set<Integer> jumpMoves = jumpMoveSet.get(position);
-    //
-    // List<String> moves = new ArrayList<>();
-    //
-    // int currentPiece = board[position];
-    //
-    // // check set of moves in simpleMoveSet
-    // moves.addAll(simpleMoves
-    // .stream()
-    // .map((Integer destination) -> {
-    // if (isLegalMove(position, destination, board, turn, simpleMoveSet)) {
-    // return position + "-" + destination;
-    // }
-    // return "";
-    // })
-    // .filter((String move) -> !move.isEmpty())
-    // .toList());
-    // // check set of moves in jumpMoveSet
-    //
-    // // check if they are legal moves
-    // // if they are legal push to moves
-    // return null;
-    // }
+//     private List<String> getJumpSequences(int position, int[] board, int
+//     turn) {
+//     Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
+//     Set<Integer> jumpMoves = jumpMoveSet.get(position);
+//
+//     for (Integer jumpDestination : jumpMoves) {
+//     String move;
+//     if (legalJumpMove(position, jumpDestination, board, turn, jumpMoveSet)) {
+//     move = position + "x" + jumpDestination;
+//     }
+//     }
+//     // 1. look at all possible jump moves from position
+//     // 2. if we find a legal move, append to move, and go to 1
+//     // 3. if no legal moves are found, add move to list, and go to 1
+//     }
+//
+//     private List<String> getMovesForPosition(int position, int turn, int[]
+//     board) {
+//     Map<Integer, Set<Integer>> simpleMoveSet = CreateLegalSimpleMoveMap();
+//     Map<Integer, Set<Integer>> jumpMoveSet = CreateLegalJumpMoveMap();
+//
+//     Set<Integer> simpleMoves = simpleMoveSet.get(position);
+//     Set<Integer> jumpMoves = jumpMoveSet.get(position);
+//
+//     List<String> moves = new ArrayList<>();
+//
+//     int currentPiece = board[position];
+//
+//     // check set of moves in simpleMoveSet
+//     moves.addAll(simpleMoves
+//     .stream()
+//     .map((Integer destination) -> {
+//     if (isLegalMove(position, destination, board, turn, simpleMoveSet)) {
+//     return position + "-" + destination;
+//     }
+//     return "";
+//     })
+//     .filter((String move) -> !move.isEmpty())
+//     .toList());
+//     // check set of moves in jumpMoveSet
+//
+//     // check if they are legal moves
+//     // if they are legal push to moves
+//     return null;
+//     }
 
 }

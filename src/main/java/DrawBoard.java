@@ -6,6 +6,7 @@ public class DrawBoard {
 
     public int boardSize;
     public Board board;
+    private ColorWrapper colorWrapper = new ColorWrapper();
 
     public DrawBoard(Board board) {
         this.board = board;
@@ -50,17 +51,18 @@ public class DrawBoard {
     private String stringHelper(int i) {
         // returns an empty spot if there's no piece
         if (i == 0) {
-            return "  ";
+            colorWrapper.prepare("  ");
         }
         if (i == 1)
-            return ColorWrapper.blue(" B");
+            colorWrapper.prepare(" B", ColorWrapper.Color.BLUE);
         if (i == 11)
-            return ColorWrapper.blue("BB");
+            colorWrapper.prepare("BB", ColorWrapper.Color.BLUE);
         if (i == 2)
-            return ColorWrapper.green(" W");
+            colorWrapper.prepare(" W", ColorWrapper.Color.GREEN);
         if (i == 22)
-            return ColorWrapper.green("WW");
-        return null;
+            colorWrapper.prepare("WW", ColorWrapper.Color.GREEN);
+
+        return colorWrapper.execute();
     }
 
     public String printPreviewBoard(String move) {
@@ -83,30 +85,32 @@ public class DrawBoard {
     }
 
     private String stringPreviewHelper(int piece, int index, String move) {
-        String visual = "";
+
         // returns an empty spot if there's no piece
         //throws null
         if (piece == 0) {
-            visual = "  ";
+            colorWrapper.prepare("  ");
             if (parseMoveString(move).contains(index)) {
-                visual = ColorWrapper.red(" x");
+                colorWrapper.prepare(" x", ColorWrapper.Color.RED);
             }
-        } else {
+        }
+
+        else {
             if (piece == 1)
-                visual = ColorWrapper.blue(" B");
+                colorWrapper.prepare(" B", ColorWrapper.Color.BLUE);
             if (piece == 11)
-                visual = ColorWrapper.blue("BB");
+                colorWrapper.prepare("BB", ColorWrapper.Color.BLUE);
             if (piece == 2)
-                visual = ColorWrapper.green(" W");
+                colorWrapper.prepare(" W", ColorWrapper.Color.GREEN);
             if (piece == 22)
-                visual = ColorWrapper.green("WW");
+                colorWrapper.prepare("WW", ColorWrapper.Color.GREEN);
             if (parseMoveString(move).contains(index)) {
-                visual = ColorWrapper.red(visual);
+                colorWrapper.prepare(ColorWrapper.Color.RED);
             }
         }
         // if the number is smaller than 10 a space is added
 
-        return visual;
+        return colorWrapper.execute();
     }
 
     private List<Integer> parseMoveString(String move) {

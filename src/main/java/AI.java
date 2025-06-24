@@ -19,6 +19,8 @@ public class AI {
     long startTime;
     long maxTime = 15000;
     long searchCount;
+    long nodeCount;
+    long leafNodeCount;
 
     public AI(Engine engine, int computer) {
         this.computer = computer;
@@ -31,6 +33,8 @@ public class AI {
 
     public String getComputerMove() {
         searchCount = 0;
+        nodeCount = 0;
+        leafNodeCount = 0;
         startTime = System.currentTimeMillis();
         MinMax best;
         MinMax aiMove = null;
@@ -47,11 +51,16 @@ public class AI {
         System.out.println(aiMove);
         System.out.println("depth: " + depth);
         System.out.println("searchCount: " + searchCount);
+        System.out.println("Total nodes: " + nodeCount);
+        System.out.println("Total leaf nodes: " + leafNodeCount);
+        System.out.println("Total non-leaf nodes: " + (nodeCount - leafNodeCount));
+        System.out.println("Effective branching factor: " + ((double)nodeCount/(nodeCount - leafNodeCount)));
         return aiMove.move();
     }
 
-    public MinMax minMax(boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
+    private MinMax minMax(boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
         searchCount++;
+        nodeCount++;
         long currentTime = System.currentTimeMillis();
         long diff = currentTime - startTime;
         if(diff >= maxTime) {
@@ -102,7 +111,8 @@ public class AI {
         return best;
     }
 
-    public int evaluate() {
+    private int evaluate() {
+        leafNodeCount++;
         int computerCount = 0;
         int playerCount = 0;
         int[] theBoard = engine.getState().getBoard();
@@ -132,27 +142,29 @@ public class AI {
             }
         }
 
-        if(playerCount == 0) {
+        if (playerCount == 0) {
             return 1000;
         }
-        if(computerCount == 0) {
+        if (computerCount == 0) {
             return -1000;
         }
 
         return computerCount - playerCount;
     }
 
-    public MinMax performVirtualMove(String move, boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
+    private MinMax performVirtualMove(String move, boolean isMax, int alpha, int beta, int currentDepth, int maxDepth) {
         Board state = engine.getState();
         state.save();
-        engine.playerMove(move);
+        engine.playerMove(move); // turn is flipped in this method...
         MinMax result = minMax(isMax, alpha, beta, currentDepth + 1, maxDepth);
+
+        // reset back to before move
         state.load();
-        engine.flipTurn();
+        engine.flipTurn(); // ... and turn is therefore flipped back here.
         return result;
     }
 
-    public boolean isMovesEmpty(List<String> moves) {
+    private boolean isMovesEmpty(List<String> moves) {
         return moves.isEmpty();
     }
 }
