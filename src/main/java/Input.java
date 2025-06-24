@@ -31,7 +31,7 @@ public class Input {
         System.out.println("Set move timer for AI.");
         int seconds = 0;
 
-        while (seconds <= 0 || seconds >= 60) {
+        while (seconds < 1 || seconds > 60) {
             try {
                 System.out.println("Enter a number between 1-60:");
                 seconds = scanner.nextInt();
