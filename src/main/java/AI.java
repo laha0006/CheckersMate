@@ -40,12 +40,12 @@ public class AI {
         MinMax aiMove = null;
         int depth = 0;
 
-        for(int i = 0; i < 18; i++) {
+        for (int i = 0; true; i++) {
             best = minMax(true, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, i);
-            if(best != null) {
-                aiMove = best;
-                depth = i;
-            }
+            if (best == null) break;
+
+            aiMove = best;
+            depth = i;
         }
 
         System.out.println(aiMove);
@@ -54,7 +54,7 @@ public class AI {
         System.out.println("Total nodes: " + nodeCount);
         System.out.println("Total leaf nodes: " + leafNodeCount);
         System.out.println("Total non-leaf nodes: " + (nodeCount - leafNodeCount));
-        System.out.println("Effective branching factor: " + ((double)nodeCount/(nodeCount - leafNodeCount)));
+        System.out.println("Effective branching factor: " + ((double) nodeCount / (nodeCount - leafNodeCount)));
         return aiMove.move();
     }
 
@@ -63,7 +63,7 @@ public class AI {
         nodeCount++;
         long currentTime = System.currentTimeMillis();
         long diff = currentTime - startTime;
-        if(diff >= maxTime) {
+        if (diff >= maxTime) {
             System.out.println("RAN OUT OF TIME");
             return null;
         }
@@ -80,7 +80,7 @@ public class AI {
             best = new MinMax(Integer.MIN_VALUE, "");
             for (String move : moves) {
                 MinMax result = performVirtualMove(move, false, alpha, beta, currentDepth, maxDepth);
-                if(result == null) {
+                if (result == null) {
                     return null;
                 }
                 if (result.score() > best.score()) {
@@ -94,7 +94,7 @@ public class AI {
         } else {
             best = new MinMax(Integer.MAX_VALUE, "");
             for (String move : moves) {
-                MinMax result = performVirtualMove(move, true , alpha, beta, currentDepth, maxDepth);
+                MinMax result = performVirtualMove(move, true, alpha, beta, currentDepth, maxDepth);
                 if (result == null) {
                     return null;
                 }
@@ -133,8 +133,7 @@ public class AI {
         for (int piece : theBoard) {
             if (engine.isBlack(piece) || engine.isWhite(piece)) {
                 int value = engine.isKing(piece) ? 2 : 1;
-                if ((engine.isBlack(piece) && computerColor == black) ||
-                    (engine.isWhite(piece) && computerColor == white)) {
+                if ((engine.isBlack(piece) && computerColor == black) || (engine.isWhite(piece) && computerColor == white)) {
                     computerCount += value;
                 } else {
                     playerCount += value;
