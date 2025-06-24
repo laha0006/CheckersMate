@@ -6,11 +6,13 @@ public class CheckersMate {
         Board board = new Board();
 
         Engine engine = new Engine(board, 1);
-        AI ai = new AI(engine, 2);
         DrawBoard draw = new DrawBoard(board);
 
         Scanner scanner = new Scanner(System.in);
         int player = Input.selectColor(scanner,engine);
+        int aiColor = player == engine.black ? engine.white : engine.black;
+        AI ai = new AI(engine, aiColor);
+
         ai.setMaxTime(Input.setMoveTimer(scanner));
 
         if(player == engine.white){
