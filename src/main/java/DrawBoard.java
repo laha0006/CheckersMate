@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class DrawBoard {
 
-    public int boardSize;
-    public Board board;
+    private int boardSize;
+    private Board board;
     private ColorWrapper colorWrapper = new ColorWrapper();
 
     public DrawBoard(Board board) {

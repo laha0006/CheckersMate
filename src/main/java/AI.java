@@ -3,24 +3,24 @@ import java.util.List;
 
 public class AI {
 
-    public final int black = 1;
-    public final int blackPawn = 1;
-    public final int blackKing = 11;
+    private final int black = 1;
+    private final int blackPawn = 1;
+    private final int blackKing = 11;
 
-    public final int white = 2;
-    public final int whitePawn = 2;
-    public final int whiteKing = 22;
+    private final int white = 2;
+    private final int whitePawn = 2;
+    private final int whiteKing = 22;
 
-    public final int empty = 0;
-    Engine engine;
+    private final int empty = 0;
+    private Engine engine;
 
-    int computer;
+    private int computer;
 
-    long startTime;
-    long maxTime = 15000;
-    long searchCount;
-    long nodeCount;
-    long leafNodeCount;
+    private long startTime;
+    private long maxTime = 15000;
+    private long searchCount;
+    private long nodeCount;
+    private long leafNodeCount;
 
     public AI(Engine engine, int computer) {
         this.computer = computer;

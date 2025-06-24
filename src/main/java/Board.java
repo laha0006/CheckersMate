@@ -2,29 +2,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    public final int black = 1;
-    public final int blackPawn = 1;
-    public final int blackKing = 11;
+    private final int black = 1;
+    private final int blackPawn = 1;
+    private final int blackKing = 11;
 
-    public final int white = 2;
-    public final int whitePawn = 2;
-    public final int whiteKing = 22;
+    private final int white = 2;
+    private final int whitePawn = 2;
+    private final int whiteKing = 22;
 
-    public final int empty = 0;
-    public final int boardSize = 32;
+    private final int empty = 0;
+    private final int boardSize = 32;
 
 
-    public int[] board;
-    public int[] old;
-    public int[] saved;
-    List<int[]> oldBoards = new ArrayList<>();
-    List<int[]> savedBoards = new ArrayList<>();
+    private int[] board;
+    private int[] old;
+    private int[] saved;
+    private List<int[]> oldBoards = new ArrayList<>();
+    private List<int[]> savedBoards = new ArrayList<>();
 
     public Board() {
         board = createStartBoard();
     }
 
-    public int[] createStartBoard() {
+    private int[] createStartBoard() {
         int[] boardState = new int[boardSize];
         for (int i = 0; i < 12; i++) {
             boardState[i] = blackPawn;
